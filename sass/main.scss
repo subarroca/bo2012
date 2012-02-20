@@ -1,0 +1,718 @@
+@import "_base";
+
+
+/**
+ *   10. GENERICS
+ */
+
+html, body{
+  background: $htmlBkg;
+  color: $htmlText;
+  font: .9em $textFont;
+  min-height: 100%;
+  line-height: 150%;
+  overflow: auto;
+}
+
+p{
+  margin: $padding 0;
+  text-align: justify;
+}
+
+a{
+  color: $htmlText;
+  text-decoration: none;
+}
+
+
+/**
+ *   11. SCROLLING
+ */
+#scrolling{
+  margin-left: $menuWidth + 2*$padding;
+  overflow: auto;
+  position: relative;
+}
+
+#scrollingContent{
+  padding-right: $padding;
+}
+
+
+
+/**
+ *   12. PANEL GENERIC
+ */
+.panel{
+  @include single-box-shadow($shadowColor, 0, 0, $shadowBlur);
+  
+  background: $listBkg;
+  border-right: $border 1px solid;
+  float: left;
+  height: 100%;
+  padding: 0 $padding $padding;
+  position: relative;
+  width: $listWidth;
+  
+  header{    
+    background: $listBkg;
+    border-bottom: 1px solid $border;
+    display: block;
+    margin: -20px (-$padding) 0;
+    padding: $padding;
+    width: $listWidth;
+    z-index: 2;
+  }
+  
+  &:first-child{
+    .close{
+      display: none;
+    }
+  }
+}
+
+.loading{
+  @include inline-block;
+  background: $menuBkg;
+  color: $menuText;
+  margin: $padding 0;
+  padding: 3px 6px;
+}
+
+
+.list-block,
+.html-block{
+  margin: $padding 0;
+}
+
+.elements{  
+  &>li{
+    position: relative;
+    
+    &:hover{
+      background: $hoverBkg;
+      color: $hoverText;
+      
+      .operations a{
+        visibility: visible;
+      }
+      
+      .selected{
+        background: mix($hoverBkg,$selectedBkg);
+      }
+    }
+    
+    &>a{
+      display: block;
+      line-height: $listItemHeight;
+    }
+  }
+  
+  input[type='checkbox']{
+    position: absolute;
+  }
+  
+  .operations{
+    position: absolute;
+  }
+}
+
+input[type='checkbox']{
+  visibility: hidden;
+}
+
+.selected,
+li:hover{
+  & input[type='checkbox']{
+    visibility: visible;
+  }
+}
+
+.close{
+  color: rgba($htmlText,.5);
+  cursor: pointer;
+  font-size: 15px;
+  position: absolute;
+  right: $padding;
+  top: $padding;
+}
+
+a.iconic{
+  &:hover{
+    color: $highlight;
+  }
+}
+
+.message_holder{
+  background: rgba($htmlBkg,.8);
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+}
+
+.message_box{
+  @include single-box-shadow($shadowColor, 0, 0, $shadowBlur);
+  
+  background: $listBkg;  
+  border: 1px solid $border;
+  margin: 20% auto;
+  padding: 2*$padding $padding $padding;
+  position: relative;
+  width: 500px;
+  
+  .close{
+    right: 10px;
+    top: 10px;
+  }
+}
+
+
+/**
+ *   13. MENU
+ */
+#menu{
+  @extend .panel;
+  
+  background: $menuBkg;
+  color: $menuText;
+  height: 100%;
+  padding: $padding;
+  position: fixed;
+  width: $menuWidth;
+  z-index: 200;
+}
+
+
+
+/**
+ *   14. LIST
+ */
+.list{
+  //@extend .panel;
+}
+
+.list-block{
+  margin-left: -$padding;
+  padding-left: $padding;
+  
+  .elements{
+    &>li{
+      border-bottom: 1px solid $border;
+      margin: 0 (-$padding);
+      
+      &>a{
+        padding: 0 $padding;
+      }
+  
+      input[type='checkbox']{
+        left: 6px;
+        top: 10px;
+      }
+      
+      .operations{
+        right: 10px;
+        top: 0;
+      }
+    }
+  }
+}
+
+.active{  
+  background: $activeBkg;
+  color: $activeText;
+  
+  a{
+    color: $activeText;
+  }
+  
+  &:hover{
+    background: $activeHoverBkg !important;
+  }
+  
+  &.selected{
+    @include single-box-shadow(0);
+    
+    background: $activeSelectedBkg !important;
+  }
+}
+
+.selected{
+  background: $selectedBkg;
+  color: $selectedText;
+}
+
+
+
+/**
+ *   15. DETAILS
+ */
+.detail{
+  //@extend .panel;
+  
+  background: $detailBkg;
+  width: $detailWidth;
+}
+
+
+/**
+ *   16. GALLERY
+ */
+
+.gallery{
+  
+}
+
+.gallery-block{
+  ul{      
+    margin: $padding/2 (-$padding/2);
+  }
+  
+  li{
+    @include inline-block;
+    
+    padding: 5px;
+  }
+  
+  .elements{
+    &>li{        
+      input[type='checkbox']{
+        left: 8px;
+        top: 10px;
+        z-index: 2;
+      }
+      
+      .operations{
+        top: 0;
+      }
+    }
+  }
+  
+  img{
+    @include single-transition(opacity, $duration);
+    
+    margin-bottom: -16px; //per evitar el marge inferior
+    position: relative;
+    width: $thumbnailW;
+  }
+  
+  figure{
+    border: 3px solid $helper;
+    min-height: $thumbnailH;
+    position: relative;
+    text-align: center;
+    width: $thumbnailW;
+    
+    /*&:before{
+      @include inline-block;
+      
+      color: $helper;
+      content: '\e027';
+      font: 36px 'IconicStroke';
+      line-height: $thumbnailH;
+      position: absolute;
+      text-align: center;
+      width: $thumbnailW;
+    }*/
+    
+    &:hover{
+      border-color: $hoverBkg;
+      
+      figcaption{
+        visibility: visible;
+      }
+      
+      &:before{
+        color: $hoverBkg;
+      }
+    }
+    
+    &.actiu{
+      border-color: $activeBkg;
+      
+      &:before{
+        color: $activeBkg;
+      }
+    
+      &:hover{
+        border-color: $activeHoverBkg;
+        
+        &:before{
+          color: $activeHoverBkg;
+        }
+      }
+    }
+  }
+  
+  figcaption{
+    background: $photoHover;
+    bottom: 0;
+    color: $photoHoverText;
+    left: 0;
+    line-height: 120%;
+    padding: 5px;
+    position: absolute;
+    right: 0;
+    text-align: left;
+    visibility: hidden;
+  }
+  
+  .selectedChildren{
+    img{
+      opacity: .4;
+    }
+    
+    .selected{
+      img{
+        opacity: 1;
+      }
+    }
+  }
+}
+
+
+/**
+ *   17. OPERATIONS
+ */
+
+.operationsMenu,
+.operations{  
+  li{    
+    @include inline-block;
+    
+    padding: 5px;
+    visibility: hidden;
+  }
+  
+  a{
+    color: $htmlText;    
+    cursor: pointer;
+    display: block;
+    line-height: $listItemHeight/2 !important;
+    
+    &:hover{
+      color: $highlight;
+    }
+  }
+  
+  .multi, .none, .single{
+    font: 18px IconicStrokeRegular;
+  }
+}
+
+.operations{
+    margin: 2px 0;
+    padding: 3px 6px;
+}
+
+.operationsMenu{
+  margin: $padding/2 (-$padding);
+  padding: 0 $padding;
+  
+  .multi{
+    background: rgba($selectedBkg, .5);
+  }
+  .none{
+    float: right;
+    visibility: visible;
+  }
+  .counter{
+    background: $selectedBkg;
+    color: $htmlText;
+    line-height: 20px;
+    margin-left: -$padding;
+    visibility: visible;
+    width: 100px;
+    
+    a{
+      color: rgba($htmlText,.5);
+      display: inline;
+      font-size: 15px;
+      line-height: 16px !important;
+      padding: 5px;
+      
+      &:hover{
+        color: $highlight;
+      }
+    }
+  }
+}
+
+.active{
+  .operationsMenu,
+  .operations{
+    a{
+      color: $htmlText;
+      
+      &:hover{
+        color: $menuText;
+      }
+    }
+  }
+}
+
+
+
+/**
+ *   18. FORM
+ */
+
+.dropbox{
+  background: $drop;
+  border: 3px dotted transparent;
+  position: relative;
+  
+  .message{
+    @extend h4;
+    
+    @include stretch(0,0,0,0);
+    
+    display: none;
+    padding: $padding;
+    text-align: center;
+    z-index: 10;
+  }
+  
+  li{
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.fileOnDoc{
+  border-color: $dropHoleBorder;
+  
+  .message{
+    background: $dropHole;
+  }
+}
+
+.fileOnDrag{
+  border-color: $dropHoverBorder;
+  
+  .message{
+    background: $dropHover;
+  }
+}
+
+.fileOnDoc,
+.fileOnDrag{
+  .message{
+    display: block;
+  }
+}
+  
+.progressHolder{    
+  background: $photoHover;
+  display: none;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.progress{    
+  background: $highlight;
+  margin: 5px 0;
+  height: $scrollSize;
+  width: 0;
+}
+
+.done{
+  .progressHolder{
+    background: $scrollHBar;
+  }
+  
+  .progress{
+    background: transparent;
+    height: 36px;
+    margin: 10px 0;
+      
+    &:before{
+      color: $photoHoverText;
+      content: '\2718';
+      font: 36px 'IconicStroke';
+    }
+  }
+}
+
+
+/**
+ *   18. FORM
+ */
+
+
+/**
+ *   19. HEADINGS
+ */
+
+h1, h2, h3, h4, h5, h6{
+  color: $highlight;
+  font-family: $titleFont;
+}
+
+h1{
+  font-size: 245%;
+}
+
+h2{
+  display: block;   
+  font-size: 210%;
+}
+
+h3{
+  font-size: 180%
+}
+
+h4{
+  font-size: 155%;
+}
+
+h5{
+  font-size: 135%;
+}
+
+h6{
+  font-size: 120%;
+}
+
+
+
+/**
+ *   18. JSCROLLPANE
+ */
+.jspContainer{
+  overflow: hidden;
+  position: relative;
+  
+  &:hover{
+    &>.jspVerticalBar,
+    &>.jspHorizontalBar{
+      visibility: visible;
+    }
+  }
+}
+
+.jspPane{
+  position: absolute;
+}
+
+.jspVerticalBar{
+  background: $scrollVBar;
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0 $scrollMargin;
+  width: $scrollSize;
+  height: 100%;
+  visibility: hidden;
+  z-index: 3;
+  
+  *{
+    margin: 0;
+    padding: 0;  
+  }
+  
+  .jspArrow{
+    height: $scrollSize;
+  }
+  
+  .jspArrow:focus{
+    outline: none;
+  }
+  
+  .jspDrag{
+    background: $scrollVHandler;
+  }
+}
+
+section{
+  .jspVerticalBar{
+    display: block;
+  }
+}
+
+.jspHorizontalBar{
+  background: rgba($menuBkg,.5);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: $scrollMargin 0;
+  width: 100%;
+  height: $scrollSize;
+  z-index: 200;
+  
+  *{
+    margin: 0;
+    padding: 0;    
+  }
+  
+  .jspCap{
+    float: left;
+  }
+  
+  .jspTrack,
+  .jspDrag{
+    float: left;
+    height: 100%;
+  }
+
+  .jspDrag{
+    background: $scrollHHandler;
+  }
+  
+  .jspArrow{
+    width: $scrollSize;
+    float: left;
+    height: 100%;
+  }
+}
+
+.jspCap{
+  display: none;
+}
+
+
+.jspTrack{
+  //background: $scrollBar;
+  cursor: pointer;
+  position: relative;
+}
+
+.jspDrag{
+  @include border-radius($scrollSize/2);
+  
+  position: relative;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+.jspArrow{
+  //background: $scrollBar;
+  text-indent: -20000px;
+  display: block;
+  cursor: pointer;
+
+  .jspDisabled{
+    cursor: default;
+    background: $scrollVBar;
+  }
+}
+
+.jspCorner
+{
+  background: $scrollVBar;
+  float: left;
+  height: 100%;
+}
+
+
+/* Yuk! CSS Hack for IE6 3 pixel bug :( */
+* html .jspCorner
+{
+  margin: 0 -3px 0 0;
+} 
