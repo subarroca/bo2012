@@ -39,23 +39,12 @@ var time = 1000;
 	
 	const PANEL_HEADER = '<header>'+
 							'<h2>[title]</h2>'+
-							'<a class="close icon x_alt"></a>'+
+							'<a class="close iconic x_alt"></a>'+
 						'</header>';
 	
 	const GENERIC_BLOCK = '<[tag] class="block-[num] [type]-block">'+
 							'<h3>[title]</h3>'+
 						'</[tag]>';
-				
-	const OPERATION_COUNTER ='<li class="counter">'+
-						'<a class="icon x_alt"></a>'+
-						'<span class="counterText"></span>'+
-					'</li>';
-					
-	const OPERATION_ITEM ='<li class="[apply] [type]">'+
-					'<a class="icon [icon]"></a>'+
-				'</li>';
-
-	const OPERATION_SELECTOR = '.icon';
 						
 	const LIST_ITEM = '<li class="id-[id]">'+
 					'<input type="checkbox" name="[model]" value="[id]"/>'+
@@ -63,9 +52,6 @@ var time = 1000;
 						'[name]'+
 					'</a>'+
 				'</li>';
-
-	const LIST_ITEM_SELECTOR = '[class^="id-"]';
-	const LIST_LINK_SELECTOR = LIST_ITEM_SELECTOR +' a:not('+OPERATION_SELECTOR+')';
 				
 	const GALLERY_ITEM = '<li class="id-[id]">'+
 					'<span class="message"></span>'+
@@ -80,12 +66,21 @@ var time = 1000;
 						'</figure>'+
 					'</a>'+
 				'</li>';
+				
+	const OPERATION_COUNTER ='<li class="counter">'+
+						'<a class="iconic x_alt"></a>'+
+						'<span class="counterText"></span>'+
+					'</li>';
+					
+	const OPERATION_ITEM ='<li class="[apply] [type]">'+
+					'<a class="iconic [icon]"></a>'+
+				'</li>';
 	
 	const ALERT_CONTAINER = '<div class="message_holder">'+
 					'<div class="message_box">'+
 						'<header>'+
 							'[title]'+
-							'<a class="close icon x_alt"></a>'+
+							'<a class="close iconic x_alt"></a>'+
 						'</header>'+
 						'[message]'+
 					'</div>'+
@@ -145,7 +140,6 @@ var time = 1000;
 	
 	const LANGUAGE_LINK = '<div>'+
 					'</div>';
-
 				
 	// errors
 	const BAD_PATH = 'Ruta errònia';
@@ -157,10 +151,9 @@ var time = 1000;
 	var methods = {
 		//creem un panell per defecte
 		init : function(options) {
-			parent = $(this.selector);
+			parent = this.selector;
 			
-			mainContent = $('<div></div>')
-				.appendTo(parent)
+			mainContent = $('<div></div>').appendTo(parent)
 				.attr('id','scrollingContent');
 
 			this.panelManager('initScrolls');
@@ -181,31 +174,29 @@ var time = 1000;
 		//llegeix el hash actual i el retorna fins a la posici� indicada
 		createHash : function(model, id, numPanel) {
 			var hash = window.location.hash.slice(2);
-			hash = hash.split('/')
-				.slice(0, numPanel * 2)
-				.join('/');
+			hash = hash.split('/').slice(0, numPanel * 2).join('/');
 			return hash + '/' + model + '/' + id;
 		},
 		
 		
 		//llegim el hash, l'interpretem i obrim tots els panells corresponents
 		parseHash : function() {
-			var $this = $(this),
-				hash = window.location.hash.slice(2),
-				hashElements = hash.split('/');
+			var dis = this;
+
+			var hash = window.location.hash.slice(2);
+			var hashElements = hash.split('/');
 
 			if(hashElements.length % 2 == 0) {
-				var i = 0,
-					turns = Math.floor(hashElements.length / 2),
-
-					panelPopper = setInterval(function() {
-						if(i == turns) {
-							clearInterval(panelPopper);
-						} else {
-							$this.panelManager('openPanel', hashElements[i * 2], hashElements[i * 2 + 1], i, hashElements[i * 2 + 3]);
-							i++;
-						}
-					}, SPEED);
+				var i = 0;
+				var turns = Math.floor(hashElements.length / 2);
+				var panelPopper = setInterval(function() {
+					if(i == turns) {
+						clearInterval(panelPopper);
+					} else {
+						$(dis).panelManager('openPanel', hashElements[i * 2], hashElements[i * 2 + 1], i, hashElements[i * 2 + 3]);
+						i++;
+					}
+				}, SPEED);
 			} else {
 				this.panelManager('showMessage', BAD_PATH);
 			}
@@ -233,8 +224,8 @@ var time = 1000;
 		
 		//carrega un panell nou
 		loadNewPanel : function(model, id, numPanel, activeId) {
-			var $this = $(this),
-				selector = this.panelManager('createNewPanel', numPanel);
+			var dis = this;
+			var selector = this.panelManager('createNewPanel', numPanel);
 			
 			if(production){
 				//PRODUCTION
@@ -246,7 +237,7 @@ var time = 1000;
 						activeId : activeId
 					 },
 					 function(json) {
-						 $this.panelManager('parseJson',json);		
+						 $($(dis).panelManager('parseJson',json));		
 					 });
 			}else{
 				switch(numPanel){
@@ -264,13 +255,13 @@ var time = 1000;
 		//constructor d'un nou panell buit
 		createNewPanel : function(numPanel) {			
 			var info = {
-					selector : 'rnd' + Math.round(Math.random() * 1000),
-					id : this.panelManager('getPanelID', numPanel, false)
-				},
-				section = $($(this).panelManager('cloneWithData', PANEL_CONTAINER, info))
-					.appendTo(mainContent);
+				selector : 'rnd' + Math.round(Math.random() * 1000),
+				id : this.panelManager('getPanelID', numPanel, false)
+				};
 			
-			section.css({'opacity': 0,
+			var section = $($(this).panelManager('cloneWithData', PANEL_CONTAINER, info)).appendTo(mainContent);
+			
+			$(section).css({'opacity': 0,
 					'left': -SLIDE,
 					'z-index': 100 - numPanel})
 				.animate({
@@ -291,90 +282,85 @@ var time = 1000;
 		
 		//interpretem la info que ens arriba des del server
 		parseJson : function(json, action) {
-			var $this = $(this),
-				panel = $this.panelManager('getContentPane', json.selector);
+			var dis = this;
+			var panel = this.panelManager('getContentPane', json.selector);
 
-			panel.empty()
+			$(panel).empty()
 				.addClass(json.type)
 				.hide();
 			
 			//preparem el header del panell
 			var info = {
-					title : json.title,
-				},
-				header = $(StringHandler.multiReplace(PANEL_HEADER, info))
-					.appendTo(panel);
-
-			$('.close', header).on('click',function(){
-				$this.panelManager('closePanel', json.numPanel);
+				title : json.title,
+				};
+				
+			var header = $(StringHandler.multiReplace(PANEL_HEADER, info)).appendTo(panel);
+			$('.close', header).click(function(){
+				$(dis).panelManager('closePanel', json.numPanel);
 			});
 	
-			$this.panelManager('createBlocks', panel, json);
+			$(this).panelManager('createBlocks', panel, json);
 
 			//apliquem scroll, el fem aparéixer amb fade in i ens petem la class random per evitar conflictes en el futur
-			panel.fadeIn(SPEED);
+			$(panel).fadeIn(SPEED);
 			this.panelManager('resetScroll');
 			$(json.selector).removeClass(json.selector.slice(1));
 		},
 		
 		//creem tots els blocs que hem rebut via json
 		createBlocks : function(panel, json){			
-			var $this = $(this);
+			var dis = this;
 						
 			//afegim un bloc per a cada node de contents						
 			$.each(json.contents, function(i, content) {
 				var info = {
-						tag : (content.tag) ? content.tag : 'div',
-						type : content.type,
-						num : i,
-						title : (content.title) ? content.title : '',
-					},
-					blockSelector = json.selector + ' ' + " .block-" + i,
-					futureSelector = '#panel-' + json.numPanel + ' ' + " .block-" + i,
-					operations,
-					block;
+					tag : (content.tag) ? content.tag : 'div',
+					type : content.type,
+					num : i,
+					title : (content.title) ? content.title : '',
+					};
 				
-				$(StringHandler.multiReplace(GENERIC_BLOCK, info))
-					.appendTo(panel);
+				$(StringHandler.multiReplace(GENERIC_BLOCK, info)).appendTo(panel);
+
+				var blockSelector = json.selector + ' ' + " .block-" + i,
+					futureSelector = '#panel-' + json.numPanel + ' ' + " .block-" + i,
+					operations;
 
 				if(content.operations) {
-					$($this.panelManager('createOperationList', futureSelector, content, true))
-						.appendTo(blockSelector)
-						.addClass('operationsMenu');
-					operations = $this.panelManager('createOperationList', futureSelector, content, false)
-						.addClass('operations');
-
-					$this.panelManager('createOperationLink', OPERATION_SELECTOR, futureSelector);
+					$($(dis).panelManager('createOperationList', futureSelector, content, true)).appendTo(blockSelector).addClass('operationsMenu');
+					operations = $(dis).panelManager('createOperationList', futureSelector, content, false).addClass('operations');
 				}
-								
+				
+				var block;
+				
 				//creem cada bloc segons el tipus especificat
 				switch(content.type) {
 					case 'list':
-						block = $this.panelManager('createListBlock', blockSelector, futureSelector, content, json.numPanel + 1, operations);
+						block = $(dis).panelManager('createListBlock', blockSelector, futureSelector, content, json.numPanel + 1, operations);
 						break;
 					case 'html':
-						block = $(content.html).appendTo(blockSelector);
+						block = $(blockSelector).append(content.html);
 						break;
 					case 'gallery':
-						block = $this.panelManager('createGalleryBlock', blockSelector, futureSelector, content, json.numPanel + 1, operations);
+						block = $(dis).panelManager('createGalleryBlock', blockSelector, futureSelector, content, json.numPanel + 1, operations);
 						break;
 					case 'form':
-						block = $this.panelManager('createFormBlock', blockSelector, content);
+						block = $(dis).panelManager('createFormBlock', blockSelector, content);
 						break;
 					default:
-						Cnsl.log("Tipus " + content.type + " no trobat");
+						throw "Tipus " + content.type + " no trobat";
 				}
 				
 				if(content.extras) {
 					$.each(content.extras, function(i, extra) {
 						switch(extra){
 							case 'droppable':
-								$this.panelManager('createDroppableArea',block);
+								$(dis).panelManager('createDroppableArea',block);
 								break;
 							case 'sortable':
 								break;
 							default:
-								Cnsl.log("Extra " + extra + " no definit");
+								throw "Extra " + extra + " no definit";
 						}
 					});
 				}
@@ -388,34 +374,33 @@ var time = 1000;
 		//creem una llista en base al que hem rebut via json
 		// per escriure fem servir selector, que és un rand; per a clicks fem servir futureSelector que és la id fixa
 		createListBlock : function(selector, futureSelector, content, nextPanel, operations) {
-			var $this = $(this),
-				slct = $(selector),
-				container = $('<ul class="elements"></ul>')
-					.appendTo(selector);
+			var dis = this;			
+				
+			var container = $('<ul class="elements"></ul>').appendTo(selector);
 
 			$.each(content.items, function(i, item) {
 				var info = {
-						id : item.id,
-						model : item.model,
-						name : item.name,
-						href : '#/' + $this.panelManager('createHash', item.model, item.id, nextPanel),
-					},
-					li = $this.panelManager('cloneWithData', LIST_ITEM, info, item);
-
-				li.appendTo(container);				
+					id : item.id,
+					model : item.model,
+					name : item.name,
+					href : '#/' + $(dis).panelManager('createHash', item.model, item.id, nextPanel),
+					};
+					
+				var li = $(dis).panelManager('cloneWithData', LIST_ITEM, info, item);
+				$(li).appendTo(container);
+				
+				//info
+				$(dis).panelManager('createPanelLink',$('a', li), futureSelector, item, nextPanel);
 					
 				//incloem les operacions individuals
 				if(operations) {
-					operations.clone(true).appendTo(li);
+					$(operations).clone(true).appendTo(li);
 				}
 			});
-
-			//interacció
-			$this.panelManager('createPanelLink',LIST_LINK_SELECTOR, futureSelector, nextPanel);
 			
 			//activem la selecci� d'elements i mostrem o amaguem les operacions
-			slct.on('click',':checkbox',function() {
-				$this.panelManager('manageCheckboxes', futureSelector);
+			$(selector + " :checkbox").click(function() {
+				$(dis).panelManager('manageCheckboxes', futureSelector);
 			});
 			
 			return container;
@@ -425,34 +410,33 @@ var time = 1000;
 		//creem una galeria en base al que hem rebut via json
 		// per escriure fem servir selector, que és un rand; per a clicks fem servir futureSelector que és la id fixa
 		createGalleryBlock : function(selector, futureSelector, content, nextPanel, operations) {
-			var $this = $(this),
-				slct = $(selector),
-				container = $('<ul class="elements"></ul>')
-					.appendTo(selector);
+			var dis = this;
+				
+			var container = $('<ul class="elements"></ul>').appendTo(selector);
 						
 			$.each(content.items, function(i, item) {
 				var info = {
-						id : item.id,
-						model : item.model,
-						name : item.name,
-						src : item.src,
-					},
-					li = $this.panelManager('cloneWithData', GALLERY_ITEM, info, item);
+					id : item.id,
+					model : item.model,
+					name : item.name,
+					src : item.src,
+					};
+					
+				var li = $(dis).panelManager('cloneWithData', GALLERY_ITEM, info, item);
+				$(li).appendTo(container);
 
-				li.appendTo(container);
+				//info
+				$(dis).panelManager('createPanelLink',$('a', li), futureSelector, item, nextPanel);
 									
 				//incloem les operacions individuals
 				if(operations) {
-					operations.clone(true).appendTo(li);
+					$(operations).clone(true).appendTo(li);
 				}
 			});
-
-			//interacció
-			$this.panelManager('createPanelLink',LIST_LINK_SELECTOR, futureSelector, nextPanel);
 			
 			//activem la selecci� d'elements i mostrem o amaguem les operacions
-			slct.on('click',':checkbox',function() {
-				$this.panelManager('manageCheckboxes', futureSelector);
+			$(selector + " :checkbox").click(function() {
+				$(dis).panelManager('manageCheckboxes', futureSelector);
 			});
 			
 			return container;
@@ -470,13 +454,12 @@ var time = 1000;
 		
 		//omplim el formulari
 		fillPlainFormBlock : function(container, items){
-			var $this = $(this);
+			var dis = this;
 								
 			$.each(items, function(i, item) {
 				var info = {
-						value : item.value,
-					},
-					div;
+					value : item.value,
+					};
 				
 				switch(item.type){
 					case 'select':
@@ -485,59 +468,59 @@ var time = 1000;
 						info.value = JsonHandler.getOptionLabel(info.value,item.options)
 				}
 							
-				div = $this.panelManager('cloneWithData', FORM_PLAIN, info, item)
-					.appendTo(container);
+				var div = $(dis).panelManager('cloneWithData', FORM_PLAIN, info, item);
+				$(div).appendTo(container);
 			});
 		},
 		
 		//desem les dades del form i passem a text pla
 		uneditFormBlock : function(selector) {
-			var $this = $(this),
-				slct = $(selector),
-				items = slct.data('items'),
-			 	i=0;
+			var dis = this;
+			var container = $(selector);
 				
 			//desem les dades
+			var items = container.data('items'),
+			 		i=0;
+			 		
 			$.each(items, function(i, item) {
-				var values = new Array,
-					element;
+				var values = new Array;
 				
 				switch(item.type){
 					case 'text':
 					case 'textarea':
 					case 'password':
-						element = $(':input[name="'+item.name+'"]',slct);
+						var element = $(':input[name="'+item.name+'"]',selector);
 						values = element.val();
 						break;
 					case 'radio':
 					case 'check':
-						$('[name="'+item.name+'"]:checked',slct).each(function() {
+						$('[name="'+item.name+'"]:checked',selector).each(function() {
 							values.push($(this).val());
 						});
 						break;
 					case 'select':
-						$('[name="'+item.name+'"] :selected',slct).each(function() {
+						$('[name="'+item.name+'"] :selected',selector).each(function() {
 							values.push($(this).val());
 						});
 						break;
 					default:
-						Cnsl.log('Tipus no trobat : '+item.type);
+						throw 'Tipus no trobat : '+item.type;
 				}
 				item.value = values;
 			});
 			
 			//carreguem les dades en format text
-			slct.empty();
-			$(this).panelManager('fillPlainFormBlock', slct, items);
+			container.empty();
+			$(this).panelManager('fillPlainFormBlock', container, items);
 
 			this.panelManager('resetScroll');
 		},
 		
 		//creem un formulari en base a les dades emmagatzemades
 		editFormBlock : function(selector) {
-			var $this = $(this),
-				container = $(selector).empty();
-
+			var dis = this;
+				
+			var container = $(selector).empty();
 			$.each(container.data('items'), function(i, item) {
 				var info = {
 						name : item.name,
@@ -547,12 +530,10 @@ var time = 1000;
 					},
 					infoOption = {
 						name : item.name,
-					},
-					template,
-					selections = '[name="'+item.name+'"]',
-					options,
-					div;
-
+					}
+					
+				var template,
+					selections = '[name="'+item.name+'"]';
 				switch(item.type){
 					case 'text':
 						template = FORM_TEXT;
@@ -562,25 +543,26 @@ var time = 1000;
 						break;
 					case 'select':
 						template = (item.multiple) ? FORM_SELECT_MULTI : FORM_SELECT_SINGLE;
-						options = $this.panelManager('createFormOptions', item.options, FORM_OPTION, infoOption);
+						var options = $(dis).panelManager('createFormOptions', item.options, FORM_OPTION, infoOption);
+					  	info.options = options.join('');
 						break;
 					case 'check':
 						template = FORM_GROUP;
-						options = $this.panelManager('createFormOptions', item.options, FORM_CHECK, infoOption);
+						var options = $(dis).panelManager('createFormOptions', item.options, FORM_CHECK, infoOption);
+					  	info.options = options.join('');
 						break;
 					case 'radio':
 						template = FORM_GROUP;
-						options = $this.panelManager('createFormOptions', item.options, FORM_RADIO, infoOption);
+						var options = $(dis).panelManager('createFormOptions', item.options, FORM_RADIO, infoOption);
+					  	info.options = options.join('');
 						break;
 					default:
-						Cnsl.log("Tipus d'item a formulari no trobat : "+item.type);
+						throw "Tipus d'item a formulari no trobat : "+item.type;
 				}
-				if(options) info.options = options.join('');
-
-				div = $this.panelManager('cloneWithData', template, info, item)
-					.appendTo(container);
+				var div = $(dis).panelManager('cloneWithData', template, info, item);
+				$(div).appendTo(container);
 				$(selections,div).val(item.value);
-			});	
+			});			
 			
 			this.panelManager('resetScroll');
 		},
@@ -590,10 +572,10 @@ var time = 1000;
 			
 			$.each(options, function(i,option){
 				var infoOption = {
-						value : option.value,
-						label : option.label,
-						i : i,
-					};
+					value : option.value,
+					label : option.label,
+					i : i,
+				};
 				
 				ops.push(StringHandler.multiReplace(template, $.extend(infoOption, info), true));
 		  });
@@ -602,27 +584,22 @@ var time = 1000;
 		},
 		
 		//creem un enllaç per a obrir un panell nou
-		createPanelLink : function(objectSelector, futureSelector, nextPanel){
-			var $this = $(this),
-				slct = $(futureSelector);
+		createPanelLink : function(objects, futureSelector, item, nextPanel){
+			var dis = this;
 			
-			slct.on('click', objectSelector, function(){
-				Cnsl.log($(this));
-				var li = $(this).parent(),
-					item = li.data('node');
-
-				li.addClass('active')
-					.siblings()
-						.removeClass('active');
-				$this.panelManager('openPanel', item.model, item.id, nextPanel);
+			$(objects).click(function(){
+				$(futureSelector + ' .active').removeClass('active');
+				$(this).parent().addClass('active');
+				$(dis).panelManager('openPanel', item.model, item.id, nextPanel);
 			});
 		},
 		
 		//creem una imatge un cop l'han deixat anar
 		createDroppedImage : function(file){
 			var preview = $(GALLERY_ITEM),
-				image = $('img', preview),
-				reader = new FileReader();
+				image = $('img', preview);
+	
+			var reader = new FileReader();
 	
 			reader.onload = function(e){
 	
@@ -656,19 +633,18 @@ var time = 1000;
 		// single: dep�n d'una sola id, no va al men�
 		// multi: aplica tant a llista com a men�
 		createOperationList : function(selector, content, menu) {
-			var $this = $(this),
-				slct = $(selector),
-				apply = (menu)? MENU_APPLY : LIST_APPLY,
-				container = $('<ul></ul>'),
-				counter;
+			var dis = $(this);
+			var apply = (menu)? MENU_APPLY : LIST_APPLY;
+			
+			var container = $('<ul></ul>');
 			
 			//fem un espai per comptar la quantitat d'elements seleccionats
 			if(menu){
-				counter = $(OPERATION_COUNTER).appendTo(container)
-					.hide()
-					.on('click','a',function(){
-						$('input[type=checkbox]',slct).attr("checked", false);
-						$this.panelManager('manageCheckboxes', slct);
+				$(OPERATION_COUNTER).appendTo(container).hide();
+				
+				$('a', OPERATION_COUNTER).click(function(){
+						$(selector+' input[type=checkbox]').attr("checked", false);
+						$(dis).panelManager('manageCheckboxes', selector);
 					});				
 			}
 							
@@ -676,24 +652,24 @@ var time = 1000;
 			$.each(content.operations, function(i, operation) {
 				if($.inArray(operation.apply, apply) > -1) {
 					var info = {
-							apply : operation.apply,
-							icon : operation.icon,
-							type : operation.type
-						},						
-						op = new Object,
-						li;
-
+						apply : operation.apply,
+						icon : operation.icon,
+						type : operation.type
+						};
+					
 					//si el botó és dual omplim 2 acions
+					var op = new Object;
 					op.primary = ObjectHandler.cloneObject(operation);
 					if(operation.save){
 						op.secondary = ObjectHandler.cloneObject(operation.save);
 						op.secondary.apply = operation.apply;
 					}
-					op.current = 'primary';
-					op.menu = menu;
+					op.current='primary';
 						
-					li = $this.panelManager('cloneWithData', OPERATION_ITEM, info, op)
+					var li = $(dis).panelManager('cloneWithData', OPERATION_ITEM, info, op)
 						.appendTo(container);
+
+					$(dis).panelManager((menu) ? 'createMenuOperationLink' : 'createItemOperationLink', $('a', li), selector, op.primary);
 				}
 			});
 				
@@ -701,62 +677,57 @@ var time = 1000;
 		},
 		
 		//definim una operació no dependent d'id o que rep multiples id [none, multi]
-		createOperationLink : function(objectSelector, selector){
-			var $this = $(this),
-				slct = $(selector);
+		createMenuOperationLink : function(objects, selector, operation){
+			var dis = this;
 			
-			slct.on('click', objectSelector, function(){
-				var icon = $(this),
-					node = icon.parent().data('node'),
-					operation = node[node.current],
-					id = [],
-					liData;
-
-				if(node.menu){
-					switch(operation.apply){
-						case 'none':
-							// operacions: edita, nou, filtre...
-							$this.panelManager('processOperation', operation.type, selector);
-							break;
-						case 'multi':
-							// operacions: esborra multi....
-							$('input:checked', slct).each( function(){
-								id.push($(this).val());
-							});
-							$this.panelManager('processOperation', operation.type, selector, id);
-							break;
-					}
-				}else{
-					// operacions: esborra simple...
-					liData = icon.closest(LIST_ITEM_SELECTOR).data('node');
-					$this.panelManager('processOperation', operation.type, selector, liData.id);
+			objects.click(function(){
+				switch(operation.apply){
+					case 'none':
+						$(dis).panelManager('processOperation', operation.type, selector);
+						break;
+					case 'multi':
+						var id = []
+						$('input[type=checkbox]', selector).each( function() {
+							if( $(this).is(':checked') ) id.push( $(this).val() );
+						});
+						$(dis).panelManager('processOperation', operation.type, selector, id);
+						break;
 				}
+			});
+		},
+		
+		//definim una operació que ha de rebre una sola id malgrat sigui multi [single, multi]
+		createItemOperationLink : function(objects, selector, operation){
+			var dis = this;
+			
+			$(objects).click(function(){
+				var node = $(this).parents('.operations').parents('li').data('node');
+				$(dis).panelManager('processOperation', operation.type, selector, node.id);
 			});
 		},
 		
 		//parsegem la funció i decidim quina operació hem de fer
 		processOperation : function(operation_type, selector, id){
-			var $this = $(this),
-				slct = $(selector),
-				currentPanel = selector.split(' ')[0].split('#panel-')[1],
-				currentBlock = selector.split(' ')[2].split('.block-')[1],
-				button = $('.operationsMenu .'+operation_type, slct);	
-
+			var dis = this;
 			id = ($.isArray(id)) ? id.join(',') : id;
+
+			var currentPanel = selector.split(' ')[0].split('#panel-')[1],
+				currentBlock = selector.split(' ')[2].split('.block-')[1],
+				button = $('.operationsMenu .'+operation_type, selector);	
 			
 			switch(operation_type){
 				case 'new':
-					//$this.panelManager('openPanel', item.model, item.id, nextPanel);
+					//$(dis).panelManager('openPanel', item.model, item.id, nextPanel);
 					break;
 					
 				case 'edit':
-					$this.panelManager('changeButtonAction',button, selector);
-					$this.panelManager('editFormBlock',selector+" .update");
+					$(dis).panelManager('changeButtonAction',button, selector);
+					$(dis).panelManager('editFormBlock',selector+" .update");
 					break;
 					
 				case 'save':
-					$this.panelManager('changeButtonAction',button, selector);
-					$this.panelManager('uneditFormBlock',selector+" .update");
+					$(dis).panelManager('changeButtonAction',button, selector);
+					$(dis).panelManager('uneditFormBlock',selector+" .update");
 					break;
 					
 				default:
@@ -768,18 +739,22 @@ var time = 1000;
 		//canviem els botons per a la funció alternativa
 		changeButtonAction : function(button, selector){
 			var node = button.data('node'),
-				slct = $(selector),
-				info,
-				button2;
-
-			node.current = (node.current == 'primary') ? 'secondary' : 'primary';			
-			info = node[node.current];
-
-			button2 = $(StringHandler.multiReplace(OPERATION_ITEM, info, true))
+				info;
+			
+			if(node.current == 'primary'){
+				info = node.secondary;
+				node.current = 'secondary';
+			}else{
+				info = node.primary;
+				node.current = 'primary';
+			}
+			
+			var button2 = $(StringHandler.multiReplace(OPERATION_ITEM, info, true))
 				.data('node', $.extend( true, {}, node));
+				
 			button.replaceWith(button2);
-
-			//el link es fa a través dels clicks al block filtrats per OPERATION_SELECTOR
+			
+			this.panelManager('createMenuOperationLink', $('.'+info.type+' a', selector), selector, info);		
 		},
 		
 		
@@ -790,9 +765,7 @@ var time = 1000;
 		
 		//controlem els elements seleccionats
 		manageCheckboxes : function(selector){			
-			var slct = $(selector),
-				checks = $("input[type=checkbox]",slct),
-				checked = $(":checked",slct);
+			var checks = $(selector + " input[type=checkbox]");
 				
 			$.each(checks, function(i, operation) {
 				if($(this).is(':checked'))
@@ -800,38 +773,38 @@ var time = 1000;
 				else
 					$(this).parent().removeClass('selected');
 			});
-			
-			//activem o desactivem les opcions
+				
+			var checked = $(selector + " :checked");
 			if( checked.length > 0){
-				$(".operationsMenu .multi",slct).css('visibility','visible');
-				$(".counterText",slct).html(checked.length + ' element' + ((checked.length > 1) ? 's' : ''));
-				$(".counter",slct).show();
-				$(".elements",slct).addClass('selectedChildren');
+				$(selector + " .operationsMenu .multi").css('visibility','visible');
+				$(selector + " .counterText").html(checked.length + ' element' + ((checked.length > 1) ? 's' : ''));
+				$(selector + " .counter").show();
+				$(selector + " .elements").addClass('selectedChildren');
 			}else{
-				$(".operationsMenu .multi",slct).css('visibility','hidden');
-				$(".counter",slct).hide();
-				$(".elements",slct).removeClass('selectedChildren');
+				$(selector + " .operationsMenu .multi").css('visibility','hidden');
+				$(selector + " .counter").hide();
+				$(selector + " .elements").removeClass('selectedChildren');
 			}
 		},
 		
 		//creem una zona on deixar arxius
 		createDroppableArea : function(object){
-			var $this = $(this),
-				dropbox = $(object).addClass('dropbox'),
-				message = $('<span class="message"></span>').appendTo(dropbox);
+			var dis = this;
+			var dropbox = $(object).addClass('dropbox')
+			var message = $('<span class="message"></span>').appendTo(dropbox);
 			
 			dropbox.filedrop({
 				// The name of the $_FILES entry:
 				paramname:'pic',
 		
 				maxfiles: 5,
-		    	maxfilesize: 2, // in mb
+		    maxfilesize: 2, // in mb
 				url: './post_file.php',
 			
 				//drag over browser window	
 			    docOver: function() {
 			        dropbox.addClass('fileOnDoc');
-			        message.html("Arrossega-ho fins aquí");
+			        $(message).html("Arrossega-ho fins aquí");
 			    },
 			    docLeave: function() {
 			        dropbox.removeClass('fileOnDoc');
@@ -849,7 +822,7 @@ var time = 1000;
 			        // user drops file
 			        dropbox.removeClass('fileOnDrag');
 			        dropbox.removeClass('fileOnDoc');
-			        message.html("");
+			        $(message).html("");
 			    },
 			
 				uploadFinished:function(i,file,response){
@@ -861,13 +834,13 @@ var time = 1000;
 				error: function(err, file) {
 					switch(err) {
 						case 'BrowserNotSupported':
-							$this.panelManager('showMessage', BAD_BROSWER_UPLOAD);
+							$(dis).panelManager('showMessage', BAD_BROSWER_UPLOAD);
 							break;
 						case 'TooManyFiles':
-							$this.panelManager('showMessage', MANY_FILES, {'qty': this.maxfiles});
+							$(dis).panelManager('showMessage', MANY_FILES, {'qty': this.maxfiles});
 							break;
 						case 'FileTooLarge':
-							$this.panelManager('showMessage', FILE_TOO_LARGE, {'file': file.name, 'size': this.maxfilesize});
+							$(dis).panelManager('showMessage', FILE_TOO_LARGE, {'file': file.name, 'size': this.maxfilesize});
 							break;
 						default:
 							break;
@@ -877,7 +850,7 @@ var time = 1000;
 				// Called before each upload is started
 				beforeEach: function(file){
 					if(!file.type.match(/^image\//)){
-						$this.panelManager('showMessage', ONLY_IMG);
+						$(dis).panelManager('showMessage', ONLY_IMG);
 			
 						// Returning false will cause the
 						// file to be rejected
@@ -886,7 +859,7 @@ var time = 1000;
 				},
 			
 				uploadStarted:function(i, file, len){
-					$this.panelManager('createImageDropped', file, dropbox);
+					$(dis).panelManager('createImageDropped', file, dropbox);
 				},
 		
 				progressUpdated: function(i, file, progress) {
@@ -898,11 +871,12 @@ var time = 1000;
 		
 		createImageDropped : function (file, dropbox){
 			var preview = $(GALLERY_ITEM),
-				image = $('img', preview),
-				reader = new FileReader();
+				image = $('img', preview);
 				
 			$('.progressHolder', preview).css('display', 'block');
-		
+	
+			var reader = new FileReader();
+	
 			reader.onload = function(e){
 	
 				// e.target.result holds the DataURL which
@@ -932,15 +906,15 @@ var time = 1000;
 		
 		//apliquem tots els scrolls de la p�gina
 		initScrolls : function() {
-			var $this = $(this),
-				isResizing = false,
-				win = $(window);
-
+			var dis = this;			
+			var isResizing = false;
+			
+			var win = $(window);
 			win.bind('resize', function() {
 				if(!isResizing) {
 					isResizing = true;
 
-					$this.panelManager('resetScroll',true);
+					$(dis).panelManager('resetScroll',true);
 					isResizing = false;
 				}
 			}).trigger('resize');
@@ -952,7 +926,7 @@ var time = 1000;
 			// IE calculates the width incorrectly first time round (it
 			// doesn't count the space used by the native scrollbar) so
 			// we re-trigger if necessary.
-			if(parent.width() != win.width()) {
+			if($(parent).width() != win.width()) {
 				win.trigger('resize');
 			}
 		},
@@ -962,48 +936,47 @@ var time = 1000;
 		resetScroll : function(firstTime) {
 			firstTime = (firstTime == undefined) ? false : firstTime;
 			
-			var win = $(window),
-				optionsV = {
-					'verticalDragMaxHeight' : SCROLL_MAX_SIZE,
-					'showArrows' : true,
-					'animateScroll' : true,
-					'animateDuration' : SPEED,
-					'hijackInternalLinks' : true,
-					'hideFocus' : true,
-					//posem -6 per contrarrestar el width del css
-					'verticalGutter' : -6,
-				},
-				optionsH = {
-					'horizontalDragMaxWidth' : SCROLL_MAX_SIZE,
-					'showArrows' : true,
-					'animateScroll' : true,
-					'animateDuration' : SPEED,
-					'hijackInternalLinks' : true,
-					'hideFocus' : true,
-					'verticalGutter' : 0,
-				},
-				end;
+			var win = $(window);
+			
+			var optionsV = {
+				'verticalDragMaxHeight' : SCROLL_MAX_SIZE,
+				'showArrows' : true,
+				'animateScroll' : true,
+				'animateDuration' : SPEED,
+				'hijackInternalLinks' : true,
+				'hideFocus' : true,
+				//posem -6 per contrarrestar el width del css
+				'verticalGutter' : -6,
+			};
+
+			var optionsH = {
+				'horizontalDragMaxWidth' : SCROLL_MAX_SIZE,
+				'showArrows' : true,
+				'animateScroll' : true,
+				'animateDuration' : SPEED,
+				'hijackInternalLinks' : true,
+				'hideFocus' : true,
+				'verticalGutter' : 0,
+			}
 
 			this.panelManager('resizePanels');
 
 			// Temporarily make the container tiny so it doesn't influence the
 			// calculation of the size of the document
-			parent.css({
+			$(parent).css({
 				'width' : 1,
 				'height' : 1
 			});
 			// Now make it the size of the window...
-			parent.css({
+			$(parent).css({
 				'width' : win.width(),
 				'height' : win.height()
 			});
 			
-			end = (win.width() <= $(mainContent).width());
-			try{
-				parent.data('jsp').scrollToPercentX(end ? 100 : 0, end ? true : false);
-			}catch(e){}
-			parent.jScrollPane(optionsH);
-			parent.data('jsp').scrollToPercentX(end ? 100 : 0, true);
+			var end = (win.width() <= $(mainContent).width());
+			try{ $(parent).data('jsp').scrollToPercentX(end ? 100 : 0, end ? true : false); }catch(e){}
+			$(parent).jScrollPane(optionsH);
+			$(parent).data('jsp').scrollToPercentX(end ? 100 : 0, true);
 
 			// Internal scrollpanes
 			$('.panel').jScrollPane(optionsV);
@@ -1012,18 +985,20 @@ var time = 1000;
 		
 		//fem un reescalat de tots els panells per adaptar-los a la mida de la p�gina
 		resizePanels : function() {
-			var lists = $('.list'),
-				details = $('.detail'),
-				panels = $('.panel'),
-				bar = $('.jspHorizontalBar').outerHeight();
+			var lists = $('.list');
+			var details = $('.detail');
+
+			var panels = $('.panel');
 
 			// allow all panes to be side by side.
-			mainContent.css('width', Math.max(
+			$(mainContent).css('width', Math.max(
 				lists.size() * lists.outerWidth(true) + details.size() * details.outerWidth(true),
 				panels.size() * panels.outerWidth(true)));
 
+			var bar = $('.jspHorizontalBar').outerHeight();
+
 			//fill the whole height but scrollbar
-			panels.css('height', $(window).height() - bar);
+			$('.panel').css('height', $(window).height() - bar);
 		},
 		
 		
@@ -1045,7 +1020,9 @@ var time = 1000;
 		
 		//obtenim la div on colocar les dades
 		getContentPane : function(selector) {
-			return $(selector).jScrollPane().data('jsp').getContentPane();
+			var element = $(selector).jScrollPane();
+			var api = element.data('jsp');
+			return api.getContentPane();
 		},
 		
 		
@@ -1055,16 +1032,14 @@ var time = 1000;
 			var tmp = $(StringHandler.multiReplace(template, pairs));
 				
 			//afegim data al pare
-			tmp.data('node', ObjectHandler.cloneObject(node));
+			$(tmp).data('node',	ObjectHandler.cloneObject(node));
 			
-			return tmp;
+			return $(tmp);
 		},
 		
 		
 		//en cas d'error retornem un missatge
 		showMessage : function(message, params) {
-			var msg;
-
 			if(params){
 				$.each(params, function(key, value) {
 				  while (message.toString().indexOf(key) != -1)
@@ -1072,9 +1047,9 @@ var time = 1000;
 				});
 			}
 			
-			msg = $(StringHandler.multiReplace(ALERT_CONTAINER, {'message' : message}))
+			var msg = $(StringHandler.multiReplace(ALERT_CONTAINER, {'message' : message}))
 				.appendTo('body');
-			$('.close', msg).on('click',function(){
+			$('.close', msg).click(function(){
 				$(msg).remove();
 			});
 		},

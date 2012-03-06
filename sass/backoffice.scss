@@ -15,7 +15,7 @@ html, body{
 }
 
 p{
-  margin: $padding 0;
+  margin: $gutter 0;
   text-align: justify;
 }
 
@@ -29,13 +29,13 @@ a{
  *   11. SCROLLING
  */
 #scrolling{
-  margin-left: $menuWidth + 2*$padding;
+  margin-left: $menuWidth + 2*$gutter;
   overflow: auto;
   position: relative;
 }
 
 #scrollingContent{
-  padding-right: $padding;
+  padding-right: $gutter;
 }
 
 
@@ -50,7 +50,7 @@ a{
   border-right: $border 1px solid;
   float: left;
   height: 100%;
-  padding: 0 $padding $padding;
+  padding: 0 $gutter $gutter;
   position: relative;
   width: $listWidth;
   
@@ -58,8 +58,8 @@ a{
     background: $listBkg;
     border-bottom: 1px solid $border;
     display: block;
-    margin: -20px (-$padding) 0;
-    padding: $padding;
+    margin: -20px (-$gutter) 0;
+    padding: $gutter;
     width: $listWidth;
     z-index: 2;
   }
@@ -75,14 +75,16 @@ a{
   @include inline-block;
   background: $menuBkg;
   color: $menuText;
-  margin: $padding 0;
+  margin: $gutter 0;
   padding: 3px 6px;
 }
 
 
 .list-block,
-.html-block{
-  margin: $padding 0;
+.html-block,
+.form-block,
+.gallery-block{
+  margin: $gutter 0;
 }
 
 .elements{  
@@ -110,15 +112,12 @@ a{
   
   input[type='checkbox']{
     position: absolute;
+    visibility: hidden;
   }
   
   .operations{
     position: absolute;
   }
-}
-
-input[type='checkbox']{
-  visibility: hidden;
 }
 
 .selected,
@@ -133,8 +132,8 @@ li:hover{
   cursor: pointer;
   font-size: 15px;
   position: absolute;
-  right: $padding;
-  top: $padding;
+  right: $gutter;
+  top: $gutter;
 }
 
 a.iconic{
@@ -159,13 +158,23 @@ a.iconic{
   background: $listBkg;  
   border: 1px solid $border;
   margin: 20% auto;
-  padding: 2*$padding $padding $padding;
+  padding: 2*$gutter $gutter $gutter;
   position: relative;
   width: 500px;
   
+  header{
+    background: $helper;
+    font-weight: bold;
+    left: 0;
+    padding: $padding $gutter;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  
   .close{
     right: 10px;
-    top: 10px;
+    top: $padding;
   }
 }
 
@@ -179,7 +188,7 @@ a.iconic{
   background: $menuBkg;
   color: $menuText;
   height: 100%;
-  padding: $padding;
+  padding: $gutter;
   position: fixed;
   width: $menuWidth;
   z-index: 200;
@@ -195,16 +204,20 @@ a.iconic{
 }
 
 .list-block{
-  margin-left: -$padding;
-  padding-left: $padding;
+  margin-left: -$gutter;
+  padding-left: $gutter;
   
   .elements{
     &>li{
       border-bottom: 1px solid $border;
-      margin: 0 (-$padding);
+      margin: 0 (-$gutter);
+      
+      &:first-child{
+        border-top: 1px solid $border;
+      }
       
       &>a{
-        padding: 0 $padding;
+        padding: 0 $gutter;
       }
   
       input[type='checkbox']{
@@ -267,13 +280,13 @@ a.iconic{
 
 .gallery-block{
   ul{      
-    margin: $padding/2 (-$padding/2);
+    margin: $gutter/2 (-$gutter/2);
   }
   
   li{
     @include inline-block;
     
-    padding: 5px;
+    padding: $padding;
   }
   
   .elements{
@@ -352,7 +365,7 @@ a.iconic{
     color: $photoHoverText;
     left: 0;
     line-height: 120%;
-    padding: 5px;
+    padding: $padding;
     position: absolute;
     right: 0;
     text-align: left;
@@ -382,7 +395,7 @@ a.iconic{
   li{    
     @include inline-block;
     
-    padding: 5px;
+    padding: $padding;
     visibility: hidden;
   }
   
@@ -408,8 +421,9 @@ a.iconic{
 }
 
 .operationsMenu{
-  margin: $padding/2 (-$padding);
-  padding: 0 $padding;
+  margin: $gutter/2 (-$gutter);
+  overflow: auto;
+  padding: 0 $gutter;
   
   .multi{
     background: rgba($selectedBkg, .5);
@@ -422,7 +436,7 @@ a.iconic{
     background: $selectedBkg;
     color: $htmlText;
     line-height: 20px;
-    margin-left: -$padding;
+    margin-left: -$gutter;
     visibility: visible;
     width: 100px;
     
@@ -431,7 +445,7 @@ a.iconic{
       display: inline;
       font-size: 15px;
       line-height: 16px !important;
-      padding: 5px;
+      padding: $padding;
       
       &:hover{
         color: $highlight;
@@ -459,6 +473,45 @@ a.iconic{
  *   18. FORM
  */
 
+.form-block{
+  div{
+    line-height: $listItemHeight;
+  }
+
+  input,
+  textarea,
+  select{
+    border: none;
+    font-family: $textFont;
+    margin: -$padding;
+    padding: $padding;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  input{
+    &[type="checkbox"],
+    &[type="radio"]{
+      margin: 0 $padding*2 0 $gutter;
+      width: auto;
+    }
+  }
+}
+
+label{
+  display: none;
+  
+  input[type="checkbox"]+&,
+  input[type="radio"]+&{
+    @include inline-block;
+  }
+  
+  .check &,
+  .radio &{
+    display: block;
+  }
+}
+
 .dropbox{
   background: $drop;
   border: 3px dotted transparent;
@@ -470,7 +523,7 @@ a.iconic{
     @include stretch(0,0,0,0);
     
     display: none;
-    padding: $padding;
+    padding: $gutter;
     text-align: center;
     z-index: 10;
   }
@@ -515,7 +568,7 @@ a.iconic{
 
 .progress{    
   background: $highlight;
-  margin: 5px 0;
+  margin: $padding 0;
   height: $scrollSize;
   width: 0;
 }

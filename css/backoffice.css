@@ -70,22 +70,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
  *   2. FONTS
  */
 @import url(http://fonts.googleapis.com/css?family=Lato:100|Droid+Serif);
-@font-face {
-  font-family: 'LatoLight';
-  src: url('../fonts/Lato-Light-webfont.eot');
-  src: url('../fonts/Lato-Light-webfont.eot?#iefix') format("embedded-opentype"), url('../fonts/Lato-Light-webfont.woff') format("woff"), url('../fonts/Lato-Light-webfont.ttf') format("truetype"), url('../fonts/Lato-Light-webfont.svg#LatoLight') format("svg");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'LatoHairline';
-  src: url('../fonts/Lato-Hairline-webfont.eot');
-  src: url('../fonts/Lato-Hairline-webfont.eot?#iefix') format("embedded-opentype"), url('../fonts/Lato-Hairline-webfont.woff') format("woff"), url('../fonts/Lato-Hairline-webfont.ttf') format("truetype"), url('../fonts/Lato-Hairline-webfont.svg#LatoHairline') format("svg");
-  font-weight: normal;
-  font-style: normal;
-}
-
 /**
  *   3. COLORS
  */
@@ -117,7 +101,7 @@ $hoverText: $htmlText;*/
 /**
  *   10. GENERICS
  */
-/* line 8, ../sass/main.scss */
+/* line 8, ../sass/backoffice.scss */
 html, body {
   background: #dddddd;
   color: #333333;
@@ -127,13 +111,13 @@ html, body {
   overflow: auto;
 }
 
-/* line 17, ../sass/main.scss */
+/* line 17, ../sass/backoffice.scss */
 p {
   margin: 30px 0;
   text-align: justify;
 }
 
-/* line 22, ../sass/main.scss */
+/* line 22, ../sass/backoffice.scss */
 a {
   color: #333333;
   text-decoration: none;
@@ -142,14 +126,14 @@ a {
 /**
  *   11. SCROLLING
  */
-/* line 31, ../sass/main.scss */
+/* line 31, ../sass/backoffice.scss */
 #scrolling {
   margin-left: 235px;
   overflow: auto;
   position: relative;
 }
 
-/* line 37, ../sass/main.scss */
+/* line 37, ../sass/backoffice.scss */
 #scrollingContent {
   padding-right: 30px;
 }
@@ -157,7 +141,7 @@ a {
 /**
  *   12. PANEL GENERIC
  */
-/* line 46, ../sass/main.scss */
+/* line 46, ../sass/backoffice.scss */
 .panel, #menu {
   -moz-box-shadow: 0 0 6px rgba(51, 51, 51, 0.5);
   -webkit-box-shadow: 0 0 6px rgba(51, 51, 51, 0.5);
@@ -171,7 +155,7 @@ a {
   position: relative;
   width: 283px;
 }
-/* line 57, ../sass/main.scss */
+/* line 57, ../sass/backoffice.scss */
 .panel header, #menu header {
   background: #eeeeee;
   border-bottom: 1px solid white;
@@ -181,12 +165,12 @@ a {
   width: 283px;
   z-index: 2;
 }
-/* line 68, ../sass/main.scss */
+/* line 68, ../sass/backoffice.scss */
 .panel:first-child .close, #menu:first-child .close {
   display: none;
 }
 
-/* line 74, ../sass/main.scss */
+/* line 74, ../sass/backoffice.scss */
 .loading {
   display: -moz-inline-box;
   -moz-box-orient: vertical;
@@ -203,55 +187,53 @@ a {
   *display: inline;
 }
 
-/* line 84, ../sass/main.scss */
+/* line 86, ../sass/backoffice.scss */
 .list-block,
-.html-block {
+.html-block,
+.form-block,
+.gallery-block {
   margin: 30px 0;
 }
 
-/* line 89, ../sass/main.scss */
+/* line 91, ../sass/backoffice.scss */
 .elements > li {
   position: relative;
 }
-/* line 92, ../sass/main.scss */
+/* line 94, ../sass/backoffice.scss */
 .elements > li:hover {
   background: #cccccc;
   color: #333333;
 }
-/* line 96, ../sass/main.scss */
+/* line 98, ../sass/backoffice.scss */
 .elements > li:hover .operations a {
   visibility: visible;
 }
-/* line 100, ../sass/main.scss */
+/* line 102, ../sass/backoffice.scss */
 .elements > li:hover .selected {
   background: #d4d4d4;
 }
-/* line 105, ../sass/main.scss */
+/* line 107, ../sass/backoffice.scss */
 .elements > li > a {
   display: block;
   line-height: 40px;
 }
-/* line 111, ../sass/main.scss */
+/* line 113, ../sass/backoffice.scss */
 .elements input[type='checkbox'] {
   position: absolute;
+  visibility: hidden;
 }
-/* line 115, ../sass/main.scss */
+/* line 118, ../sass/backoffice.scss */
 .elements .operations {
   position: absolute;
 }
 
-/* line 120, ../sass/main.scss */
-input[type='checkbox'] {
-  visibility: hidden;
-}
-
-/* line 126, ../sass/main.scss */
+/* line 125, ../sass/backoffice.scss */
 .selected input[type='checkbox'],
 li:hover input[type='checkbox'] {
   visibility: visible;
 }
 
-/* line 131, ../sass/main.scss */
+/* line 130, ../sass/backoffice.scss */
 .close {
   color: rgba(51, 51, 51, 0.5);
   cursor: pointer;
@@ -261,12 +243,12 @@ li:hover input[type='checkbox'] {
   top: 30px;
 }
 
-/* line 141, ../sass/main.scss */
+/* line 140, ../sass/backoffice.scss */
 a.iconic:hover {
   color: #ff3333;
 }
 
-/* line 146, ../sass/main.scss */
+/* line 145, ../sass/backoffice.scss */
 .message_holder {
   background: rgba(221, 221, 221, 0.8);
   bottom: 0;
@@ -277,7 +259,7 @@ a.iconic:hover {
   z-index: 1000;
 }
 
-/* line 156, ../sass/main.scss */
+/* line 155, ../sass/backoffice.scss */
 .message_box {
   -moz-box-shadow: 0 0 6px rgba(51, 51, 51, 0.5);
   -webkit-box-shadow: 0 0 6px rgba(51, 51, 51, 0.5);
@@ -290,16 +272,26 @@ a.iconic:hover {
   position: relative;
   width: 500px;
 }
-/* line 166, ../sass/main.scss */
+/* line 165, ../sass/backoffice.scss */
+.message_box header {
+  background: #cccccc;
+  font-weight: bold;
+  left: 0;
+  padding: 5px 30px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+/* line 175, ../sass/backoffice.scss */
 .message_box .close {
   right: 10px;
-  top: 10px;
+  top: 5px;
 }
 
 /**
  *   13. MENU
  */
-/* line 176, ../sass/main.scss */
+/* line 185, ../sass/backoffice.scss */
 #menu {
   background: #333333;
   color: white;
@@ -313,45 +305,49 @@ a.iconic:hover {
 /**
  *   14. LIST
  */
-/* line 197, ../sass/main.scss */
+/* line 206, ../sass/backoffice.scss */
 .list-block {
   margin-left: -30px;
   padding-left: 30px;
 }
-/* line 202, ../sass/main.scss */
+/* line 211, ../sass/backoffice.scss */
 .list-block .elements > li {
   border-bottom: 1px solid white;
   margin: 0 -30px;
 }
-/* line 206, ../sass/main.scss */
+/* line 215, ../sass/backoffice.scss */
+.list-block .elements > li:first-child {
+  border-top: 1px solid white;
+}
+/* line 219, ../sass/backoffice.scss */
 .list-block .elements > li > a {
   padding: 0 30px;
 }
-/* line 210, ../sass/main.scss */
+/* line 223, ../sass/backoffice.scss */
 .list-block .elements > li input[type='checkbox'] {
   left: 6px;
   top: 10px;
 }
-/* line 215, ../sass/main.scss */
+/* line 228, ../sass/backoffice.scss */
 .list-block .elements > li .operations {
   right: 10px;
   top: 0;
 }
 
-/* line 223, ../sass/main.scss */
+/* line 236, ../sass/backoffice.scss */
 .active {
   background: #ff3333;
   color: white;
 }
-/* line 227, ../sass/main.scss */
+/* line 240, ../sass/backoffice.scss */
 .active a {
   color: white;
 }
-/* line 231, ../sass/main.scss */
+/* line 244, ../sass/backoffice.scss */
 .active:hover {
   background: #e60000 !important;
 }
-/* line 235, ../sass/main.scss */
+/* line 248, ../sass/backoffice.scss */
 .active.selected {
   -moz-box-shadow: 0px 0px 5px 0;
   -webkit-box-shadow: 0px 0px 5px 0;
@@ -360,7 +356,7 @@ a.iconic:hover {
   background: #ff8080 !important;
 }
 
-/* line 242, ../sass/main.scss */
+/* line 255, ../sass/backoffice.scss */
 .selected {
   background: #dddddd;
   color: #333333;
@@ -369,7 +365,7 @@ a.iconic:hover {
 /**
  *   15. DETAILS
  */
-/* line 252, ../sass/main.scss */
+/* line 265, ../sass/backoffice.scss */
 .detail {
   background: white;
   width: 458px;
@@ -378,11 +374,11 @@ a.iconic:hover {
 /**
  *   16. GALLERY
  */
-/* line 269, ../sass/main.scss */
+/* line 282, ../sass/backoffice.scss */
 .gallery-block ul {
   margin: 15px -15px;
 }
-/* line 273, ../sass/main.scss */
+/* line 286, ../sass/backoffice.scss */
 .gallery-block li {
   display: -moz-inline-box;
   -moz-box-orient: vertical;
@@ -395,17 +391,17 @@ a.iconic:hover {
 .gallery-block li {
   *display: inline;
 }
-/* line 281, ../sass/main.scss */
+/* line 294, ../sass/backoffice.scss */
 .gallery-block .elements > li input[type='checkbox'] {
   left: 8px;
   top: 10px;
   z-index: 2;
 }
-/* line 287, ../sass/main.scss */
+/* line 300, ../sass/backoffice.scss */
 .gallery-block .elements > li .operations {
   top: 0;
 }
-/* line 293, ../sass/main.scss */
+/* line 306, ../sass/backoffice.scss */
 .gallery-block img {
   -moz-transition-property: opacity;
   -webkit-transition-property: opacity;
@@ -419,7 +415,7 @@ a.iconic:hover {
   position: relative;
   width: 130px;
 }
-/* line 301, ../sass/main.scss */
+/* line 314, ../sass/backoffice.scss */
 .gallery-block figure {
   border: 3px solid #cccccc;
   min-height: 70px;
@@ -438,35 +434,35 @@ a.iconic:hover {
     width: $thumbnailW;
   }*/
 }
-/* line 320, ../sass/main.scss */
+/* line 333, ../sass/backoffice.scss */
 .gallery-block figure:hover {
   border-color: #cccccc;
 }
-/* line 323, ../sass/main.scss */
+/* line 336, ../sass/backoffice.scss */
 .gallery-block figure:hover figcaption {
   visibility: visible;
 }
-/* line 327, ../sass/main.scss */
+/* line 340, ../sass/backoffice.scss */
 .gallery-block figure:hover:before {
   color: #cccccc;
 }
-/* line 332, ../sass/main.scss */
+/* line 345, ../sass/backoffice.scss */
 .gallery-block figure.actiu {
   border-color: #ff3333;
 }
-/* line 335, ../sass/main.scss */
+/* line 348, ../sass/backoffice.scss */
 .gallery-block figure.actiu:before {
   color: #ff3333;
 }
-/* line 339, ../sass/main.scss */
+/* line 352, ../sass/backoffice.scss */
 .gallery-block figure.actiu:hover {
   border-color: #e60000;
 }
-/* line 342, ../sass/main.scss */
+/* line 355, ../sass/backoffice.scss */
 .gallery-block figure.actiu:hover:before {
   color: #e60000;
 }
-/* line 349, ../sass/main.scss */
+/* line 362, ../sass/backoffice.scss */
 .gallery-block figcaption {
   background: rgba(51, 51, 51, 0.5);
   bottom: 0;
@@ -479,11 +475,11 @@ a.iconic:hover {
   text-align: left;
   visibility: hidden;
 }
-/* line 363, ../sass/main.scss */
+/* line 376, ../sass/backoffice.scss */
 .gallery-block .selectedChildren img {
   opacity: .4;
 }
-/* line 368, ../sass/main.scss */
+/* line 381, ../sass/backoffice.scss */
 .gallery-block .selectedChildren .selected img {
   opacity: 1;
 }
@@ -491,7 +487,7 @@ a.iconic:hover {
 /**
  *   17. OPERATIONS
  */
-/* line 382, ../sass/main.scss */
+/* line 395, ../sass/backoffice.scss */
 .operationsMenu li,
 .operations li {
   display: -moz-inline-box;
@@ -507,7 +503,7 @@ a.iconic:hover {
 .operations li {
   *display: inline;
 }
-/* line 389, ../sass/main.scss */
+/* line 402, ../sass/backoffice.scss */
 .operationsMenu a,
 .operations a {
   color: #333333;
@@ -515,12 +511,12 @@ a.iconic:hover {
   display: block;
   line-height: 20px !important;
 }
-/* line 395, ../sass/main.scss */
+/* line 408, ../sass/backoffice.scss */
 .operationsMenu a:hover,
 .operations a:hover {
   color: #ff3333;
 }
-/* line 400, ../sass/main.scss */
+/* line 413, ../sass/backoffice.scss */
 .operationsMenu .multi, .operationsMenu .none, .operationsMenu .single,
 .operations .multi,
 .operations .none,
@@ -528,27 +524,28 @@ a.iconic:hover {
   font: 18px IconicStrokeRegular;
 }
 
-/* line 405, ../sass/main.scss */
+/* line 418, ../sass/backoffice.scss */
 .operations {
   margin: 2px 0;
   padding: 3px 6px;
 }
 
-/* line 410, ../sass/main.scss */
+/* line 423, ../sass/backoffice.scss */
 .operationsMenu {
   margin: 15px -30px;
+  overflow: auto;
   padding: 0 30px;
 }
-/* line 414, ../sass/main.scss */
+/* line 428, ../sass/backoffice.scss */
 .operationsMenu .multi {
   background: rgba(221, 221, 221, 0.5);
 }
-/* line 417, ../sass/main.scss */
+/* line 431, ../sass/backoffice.scss */
 .operationsMenu .none {
   float: right;
   visibility: visible;
 }
-/* line 421, ../sass/main.scss */
+/* line 435, ../sass/backoffice.scss */
 .operationsMenu .counter {
   background: #dddddd;
   color: #333333;
@@ -557,7 +554,7 @@ a.iconic:hover {
   visibility: visible;
   width: 100px;
 }
-/* line 429, ../sass/main.scss */
+/* line 443, ../sass/backoffice.scss */
 .operationsMenu .counter a {
   color: rgba(51, 51, 51, 0.5);
   display: inline;
@@ -565,17 +562,17 @@ a.iconic:hover {
   line-height: 16px !important;
   padding: 5px;
 }
-/* line 436, ../sass/main.scss */
+/* line 450, ../sass/backoffice.scss */
 .operationsMenu .counter a:hover {
   color: #ff3333;
 }
 
-/* line 446, ../sass/main.scss */
+/* line 460, ../sass/backoffice.scss */
 .active .operationsMenu a,
 .active .operations a {
   color: #333333;
 }
-/* line 449, ../sass/main.scss */
+/* line 463, ../sass/backoffice.scss */
 .active .operationsMenu a:hover,
 .active .operations a:hover {
   color: white;
@@ -584,13 +581,55 @@ a.iconic:hover {
 /**
  *   18. FORM
  */
-/* line 462, ../sass/main.scss */
+/* line 477, ../sass/backoffice.scss */
+.form-block div {
+  line-height: 40px;
+}
+/* line 483, ../sass/backoffice.scss */
+.form-block input,
+.form-block textarea,
+.form-block select {
+  border: none;
+  font-family: "Droid Serif", "Georgia", "Times New Roman", "Palatino", "Hoefler Text", "Baskerville", serif;
+  margin: -5px;
+  padding: 5px;
+  width: 100%;
+  max-width: 100%;
+}
+/* line 494, ../sass/backoffice.scss */
+.form-block input[type="checkbox"], .form-block input[type="radio"] {
+  margin: 0 10px 0 30px;
+  width: auto;
+}
+
+/* line 501, ../sass/backoffice.scss */
+label {
+  display: none;
+}
+/* line 505, ../sass/backoffice.scss */
+input[type="checkbox"] + label, input[type="radio"] + label {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+}
+/* line 7, c:/Ruby192/lib/ruby/gems/1.9.1/gems/compass-0.11.7/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+input[type="checkbox"] + label, input[type="radio"] + label {
+  *display: inline;
+}
+/* line 510, ../sass/backoffice.scss */
+.check label, .radio label {
+  display: block;
+}
+
+/* line 515, ../sass/backoffice.scss */
 .dropbox {
   background: #eeeeee;
   border: 3px dotted transparent;
   position: relative;
 }
-/* line 467, ../sass/main.scss */
+/* line 520, ../sass/backoffice.scss */
 .dropbox .message {
   position: absolute;
   top: 0;
@@ -602,37 +641,37 @@ a.iconic:hover {
   text-align: center;
   z-index: 10;
 }
-/* line 478, ../sass/main.scss */
+/* line 531, ../sass/backoffice.scss */
 .dropbox li {
   position: relative;
   z-index: 1;
 }
 
-/* line 484, ../sass/main.scss */
+/* line 537, ../sass/backoffice.scss */
 .fileOnDoc {
   border-color: #f87d7d;
 }
-/* line 487, ../sass/main.scss */
+/* line 540, ../sass/backoffice.scss */
 .fileOnDoc .message {
   background: rgba(241, 204, 204, 0.8);
 }
 
-/* line 492, ../sass/main.scss */
+/* line 545, ../sass/backoffice.scss */
 .fileOnDrag {
   border-color: #ff3333;
 }
-/* line 495, ../sass/main.scss */
+/* line 548, ../sass/backoffice.scss */
 .fileOnDrag .message {
   background: rgba(243, 181, 181, 0.8);
 }
 
-/* line 502, ../sass/main.scss */
+/* line 555, ../sass/backoffice.scss */
 .fileOnDoc .message,
 .fileOnDrag .message {
   display: block;
 }
 
-/* line 507, ../sass/main.scss */
+/* line 560, ../sass/backoffice.scss */
 .progressHolder {
   background: rgba(51, 51, 51, 0.5);
   display: none;
@@ -642,7 +681,7 @@ a.iconic:hover {
   top: 0;
 }
 
-/* line 516, ../sass/main.scss */
+/* line 569, ../sass/backoffice.scss */
 .progress {
   background: #ff3333;
   margin: 5px 0;
@@ -650,17 +689,17 @@ a.iconic:hover {
   width: 0;
 }
 
-/* line 524, ../sass/main.scss */
+/* line 577, ../sass/backoffice.scss */
 .done .progressHolder {
   background: rgba(51, 51, 51, 0.5);
 }
-/* line 528, ../sass/main.scss */
+/* line 581, ../sass/backoffice.scss */
 .done .progress {
   background: transparent;
   height: 36px;
   margin: 10px 0;
 }
-/* line 533, ../sass/main.scss */
+/* line 586, ../sass/backoffice.scss */
 .done .progress:before {
   color: white;
   content: '\2718';
@@ -673,39 +712,39 @@ a.iconic:hover {
 /**
  *   19. HEADINGS
  */
-/* line 551, ../sass/main.scss */
+/* line 604, ../sass/backoffice.scss */
 h1, h2, h3, h4, .dropbox .message, h5, h6 {
   color: #ff3333;
-  font-family: "Lato", "LatoHairline", Trebuchet, Arial, sans-serif;
+  font-family: Trebuchet, Arial, sans-serif;
 }
 
-/* line 556, ../sass/main.scss */
+/* line 609, ../sass/backoffice.scss */
 h1 {
   font-size: 245%;
 }
 
-/* line 560, ../sass/main.scss */
+/* line 613, ../sass/backoffice.scss */
 h2 {
   display: block;
   font-size: 210%;
 }
 
-/* line 565, ../sass/main.scss */
+/* line 618, ../sass/backoffice.scss */
 h3 {
   font-size: 180%;
 }
 
-/* line 569, ../sass/main.scss */
+/* line 622, ../sass/backoffice.scss */
 h4, .dropbox .message {
   font-size: 155%;
 }
 
-/* line 573, ../sass/main.scss */
+/* line 626, ../sass/backoffice.scss */
 h5 {
   font-size: 135%;
 }
 
-/* line 577, ../sass/main.scss */
+/* line 630, ../sass/backoffice.scss */
 h6 {
   font-size: 120%;
 }
@@ -713,22 +752,22 @@ h6 {
 /**
  *   18. JSCROLLPANE
  */
-/* line 586, ../sass/main.scss */
+/* line 639, ../sass/backoffice.scss */
 .jspContainer {
   overflow: hidden;
   position: relative;
 }
-/* line 592, ../sass/main.scss */
+/* line 645, ../sass/backoffice.scss */
 .jspContainer:hover > .jspVerticalBar, .jspContainer:hover > .jspHorizontalBar {
   visibility: visible;
 }
 
-/* line 598, ../sass/main.scss */
+/* line 651, ../sass/backoffice.scss */
 .jspPane {
   position: absolute;
 }
 
-/* line 602, ../sass/main.scss */
+/* line 655, ../sass/backoffice.scss */
 .jspVerticalBar {
   background: rgba(204, 204, 204, 0.3);
   display: none;
@@ -741,30 +780,30 @@ h6 {
   visibility: hidden;
   z-index: 3;
 }
-/* line 614, ../sass/main.scss */
+/* line 667, ../sass/backoffice.scss */
 .jspVerticalBar * {
   margin: 0;
   padding: 0;
 }
-/* line 619, ../sass/main.scss */
+/* line 672, ../sass/backoffice.scss */
 .jspVerticalBar .jspArrow {
   height: 6px;
 }
-/* line 623, ../sass/main.scss */
+/* line 676, ../sass/backoffice.scss */
 .jspVerticalBar .jspArrow:focus {
   outline: none;
 }
-/* line 627, ../sass/main.scss */
+/* line 680, ../sass/backoffice.scss */
 .jspVerticalBar .jspDrag {
   background: #aaaaaa;
 }
 
-/* line 633, ../sass/main.scss */
+/* line 686, ../sass/backoffice.scss */
 section .jspVerticalBar {
   display: block;
 }
 
-/* line 638, ../sass/main.scss */
+/* line 691, ../sass/backoffice.scss */
 .jspHorizontalBar {
   background: rgba(51, 51, 51, 0.5);
   position: absolute;
@@ -775,44 +814,44 @@ section .jspVerticalBar {
   height: 6px;
   z-index: 200;
 }
-/* line 648, ../sass/main.scss */
+/* line 701, ../sass/backoffice.scss */
 .jspHorizontalBar * {
   margin: 0;
   padding: 0;
 }
-/* line 653, ../sass/main.scss */
+/* line 706, ../sass/backoffice.scss */
 .jspHorizontalBar .jspCap {
   float: left;
 }
-/* line 658, ../sass/main.scss */
+/* line 711, ../sass/backoffice.scss */
 .jspHorizontalBar .jspTrack,
 .jspHorizontalBar .jspDrag {
   float: left;
   height: 100%;
 }
-/* line 663, ../sass/main.scss */
+/* line 716, ../sass/backoffice.scss */
 .jspHorizontalBar .jspDrag {
   background: #333333;
 }
-/* line 667, ../sass/main.scss */
+/* line 720, ../sass/backoffice.scss */
 .jspHorizontalBar .jspArrow {
   width: 6px;
   float: left;
   height: 100%;
 }
 
-/* line 674, ../sass/main.scss */
+/* line 727, ../sass/backoffice.scss */
 .jspCap {
   display: none;
 }
 
-/* line 679, ../sass/main.scss */
+/* line 732, ../sass/backoffice.scss */
 .jspTrack {
   cursor: pointer;
   position: relative;
 }
 
-/* line 685, ../sass/main.scss */
+/* line 738, ../sass/backoffice.scss */
 .jspDrag {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -826,19 +865,19 @@ section .jspVerticalBar {
   cursor: pointer;
 }
 
-/* line 694, ../sass/main.scss */
+/* line 747, ../sass/backoffice.scss */
 .jspArrow {
   text-indent: -20000px;
   display: block;
   cursor: pointer;
 }
-/* line 700, ../sass/main.scss */
+/* line 753, ../sass/backoffice.scss */
 .jspArrow .jspDisabled {
   cursor: default;
   background: rgba(204, 204, 204, 0.3);
 }
 
-/* line 707, ../sass/main.scss */
+/* line 760, ../sass/backoffice.scss */
 .jspCorner {
   background: rgba(204, 204, 204, 0.3);
   float: left;
@@ -846,7 +885,7 @@ section .jspVerticalBar {
 }
 
 /* Yuk! CSS Hack for IE6 3 pixel bug :( */
-/* line 716, ../sass/main.scss */
+/* line 769, ../sass/backoffice.scss */
 * html .jspCorner {
   margin: 0 -3px 0 0;
 }
