@@ -1,0 +1,3 @@
+- Retallador d'imatges
+- Sortable
+- Ampliar els missatges i que es puguin encuar
