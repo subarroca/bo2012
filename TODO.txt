@@ -1,3 +1,7 @@
 - Retallador d'imatges
-- Sortable
+- Salts per número a sortable
 - Ampliar els missatges i que es puguin encuar
+- Paginació a tips
+- Enviament a API
+- Inclusió del menú
+- Bloc de traducció d'idiomes

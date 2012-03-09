@@ -16,13 +16,18 @@ var time = 1000;
 	var mainContent;
 
 	var defaultPanelURL = '';
-	var baseURL = '';
 
-	const SPEED = 500;
-	const SLIDE = 50;
-	const DELAY = 3000;
+	var config = {
+		speed : 500,
+		slide : 100,
+		delay : 3000,
 
-	const SCROLL_MAX_SIZE = 100;
+		scrollMaxSize : 100,
+
+		dragOpacity: .8,
+
+		baseURL : ''
+	}
 
 	// none: no depen de id, t�pic de men�
 	// single: dep�n d'una sola id, no va al men�
@@ -31,7 +36,9 @@ var time = 1000;
 	const LIST_APPLY = ['single', 'multi'];
 
 	
-	//templates HTML
+	/*
+	*	TEMPLATES HTML
+	*/
 	
 	const PANEL_CONTAINER = '<section id="[id]" class="panel [selector]">'+
 							'<span class="loading">carregant...</span>'+
@@ -46,6 +53,8 @@ var time = 1000;
 							'<h3>[title]</h3>'+
 						'</[tag]>';
 				
+	// OPERACIONS
+
 	const OPERATION_COUNTER ='<li class="counter">'+
 						'<a class="icon x_alt"></a>'+
 						'<span class="counterText"></span>'+
@@ -56,42 +65,12 @@ var time = 1000;
 				'</li>';
 
 	const OPERATION_SELECTOR = '.icon';
-						
-	const LIST_ITEM = '<li class="id-[id]">'+
-					'<input type="checkbox" name="[model]" value="[id]"/>'+
-					'<a href="[href]">'+
-						'[name]'+
-					'</a>'+
-				'</li>';
 
-	const LIST_ITEM_SELECTOR = '[class^="id-"]';
-	const LIST_LINK_SELECTOR = LIST_ITEM_SELECTOR +' a:not('+OPERATION_SELECTOR+')';
-				
-	const GALLERY_ITEM = '<li class="id-[id]">'+
-					'<span class="message"></span>'+
-					'<input type="checkbox" name="[model]" value="[id]"/>'+
-					'<a>'+
-						'<figure>'+
-							'<img src="[src]" />'+
-							'<div class="progressHolder">'+
-								'<div class="progress"></div>'+
-							'</div>'+
-							'<figcaption>[name]</figcaption>'+
-						'</figure>'+
-					'</a>'+
-				'</li>';
-	
-	const ALERT_CONTAINER = '<div class="message_holder">'+
-					'<div class="message_box">'+
-						'<header>'+
-							'[title]'+
-							'<a class="close icon x_alt"></a>'+
-						'</header>'+
-						'[message]'+
-					'</div>'+
-				'</div>';
+	// FORM
 				
 	const FORM_BLOCK = '<div class="form update"></div>';
+
+	const FORM_SELECTOR = '.update';
 				
 	const FORM_TEXT = '<div class="[type]">'+
 						'<label for=[name]>[label]</label>'+
@@ -133,6 +112,39 @@ var time = 1000;
 	const FORM_PLAIN = '<div>'+
 						'<span>[value]</span>'+
 					'</div>';
+				
+	// GALLERY
+
+	const GALLERY_ITEM = '<li class="id-[id]">'+
+					'<span class="message"></span>'+
+					'<input type="checkbox" name="[model]" value="[id]"/>'+
+					'<a>'+
+						'<figure>'+
+							'<img src="[src]" />'+
+							'<div class="progressHolder">'+
+								'<div class="progress"></div>'+
+							'</div>'+
+							'<figcaption>[name]</figcaption>'+
+						'</figure>'+
+					'</a>'+
+				'</li>';
+						
+	// LIST
+
+	const LIST_UL = '<ul class="elements"></ul>';
+
+	const LIST_ITEM = '<li data-id="[id]">'+
+					'<input type="checkbox" name="[model]" value="[id]"/>'+
+					'<a href="[href]">'+
+						'[name]'+
+					'</a>'+
+				'</li>';
+
+	const LIST_UL_SELECTOR = '.elements';
+	const LIST_ITEM_SELECTOR = LIST_UL_SELECTOR+'>li';
+	const LIST_LINK_SELECTOR = LIST_ITEM_SELECTOR +' a:not('+OPERATION_SELECTOR+')';
+
+	// LANGUAGE
 					
 	const LANGUAGE_BOX = '<div>'+
 					'</div>';
@@ -146,6 +158,24 @@ var time = 1000;
 	const LANGUAGE_LINK = '<div>'+
 					'</div>';
 
+	// MESSAGE
+	
+	const ALERT_CONTAINER = '<div class="message_holder">'+
+					'<div class="message_box">'+
+						'<header>'+
+							'[title]'+
+							'<a class="close icon x_alt"></a>'+
+						'</header>'+
+						'[message]'+
+					'</div>'+
+				'</div>';
+
+	// TIP
+
+	const TIP_UL = '<ul class="tips"></ul>';
+	const TIP_ITEM = '<li>[item]</div>';
+	const TIP_ICON = '<span class="icon question_mark"></span>';
+
 				
 	// errors
 	const BAD_PATH = 'Ruta errònia';
@@ -156,7 +186,10 @@ var time = 1000;
 	
 	var methods = {
 		//creem un panell per defecte
-		init : function(options) {
+		init : function(_config) {
+			$.extend(config, _config);
+			$.fx.speeds._default = config.speed;
+
 			parent = $(this.selector);
 			
 			mainContent = $('<div></div>')
@@ -176,8 +209,7 @@ var time = 1000;
 				this.panelManager('parseHash');
 			}
 		},
-		
-		
+				
 		//llegeix el hash actual i el retorna fins a la posici� indicada
 		createHash : function(model, id, numPanel) {
 			var hash = window.location.hash.slice(2);
@@ -186,8 +218,7 @@ var time = 1000;
 				.join('/');
 			return hash + '/' + model + '/' + id;
 		},
-		
-		
+				
 		//llegim el hash, l'interpretem i obrim tots els panells corresponents
 		parseHash : function() {
 			var $this = $(this),
@@ -205,17 +236,17 @@ var time = 1000;
 							$this.panelManager('openPanel', hashElements[i * 2], hashElements[i * 2 + 1], i, hashElements[i * 2 + 3]);
 							i++;
 						}
-					}, SPEED);
+					});
 			} else {
 				this.panelManager('showMessage', BAD_PATH);
 			}
 		},
 		
+
 		
 		/**
 		*	PANELS
-		*/
-		
+		*/		
 		
 		//elimina tots els panells posteriors i en carrega un de nou
 		openPanel : function(model, id, numPanel, activeId) {
@@ -271,23 +302,22 @@ var time = 1000;
 					.appendTo(mainContent);
 			
 			section.css({'opacity': 0,
-					'left': -SLIDE,
+					'left': -config.slide,
 					'z-index': 100 - numPanel})
 				.animate({
 					opacity : '1',
-					left : 0},
-					SPEED);
+					left : 0});
 
 			this.panelManager('resetScroll');
 
 			return '.' + info.selector;
 		},
 		
+
 		
 		/**
 		*		DATA
-		*/
-		
+		*/		
 		
 		//interpretem la info que ens arriba des del server
 		parseJson : function(json, action) {
@@ -312,7 +342,7 @@ var time = 1000;
 			$this.panelManager('createBlocks', panel, json);
 
 			//apliquem scroll, el fem aparéixer amb fade in i ens petem la class random per evitar conflictes en el futur
-			panel.fadeIn(SPEED);
+			panel.fadeIn();
 			this.panelManager('resetScroll');
 			$(json.selector).removeClass(json.selector.slice(1));
 		},
@@ -349,17 +379,20 @@ var time = 1000;
 								
 				//creem cada bloc segons el tipus especificat
 				switch(content.type) {
-					case 'list':
-						block = $this.panelManager('createListBlock', blockSelector, futureSelector, content, json.numPanel + 1, operations);
-						break;
-					case 'html':
-						block = $(content.html).appendTo(blockSelector);
+					case 'form':
+						block = $this.panelManager('createFormBlock', blockSelector, content);
 						break;
 					case 'gallery':
 						block = $this.panelManager('createGalleryBlock', blockSelector, futureSelector, content, json.numPanel + 1, operations);
 						break;
-					case 'form':
-						block = $this.panelManager('createFormBlock', blockSelector, content);
+					case 'html':
+						block = $(content.html).appendTo(blockSelector);
+						break;
+					case 'list':
+						block = $this.panelManager('createListBlock', blockSelector, futureSelector, content, json.numPanel + 1, operations);
+						break;
+					case 'tip':
+						block = $this.panelManager('createTipBlock', blockSelector, content);
 						break;
 					default:
 						Cnsl.log("Tipus " + content.type + " no trobat");
@@ -385,12 +418,47 @@ var time = 1000;
 			});
 		},
 		
+		//creem un enllaç per a obrir un panell nou
+		createPanelLink : function(objectSelector, futureSelector, nextPanel){
+			var $this = $(this),
+				slct = $(futureSelector);
+
+			slct.on('click', objectSelector, function(e){
+				var li = $(this).parent(),
+					item = li.data('node');
+
+				li.addClass('active')
+					.siblings()
+						.removeClass('active');
+				$this.panelManager('openPanel', item.model, item.id, nextPanel);
+			});
+		},
+
+		//fem una crida a la resposta segons l'operació i les dades donades
+		sendResponse : function(url, method, params){
+			var _params = '';
+
+			if(params){
+				$.each(params, function(key,value){
+					_params+=key+' : '+value+' / ';
+				});
+			}
+
+			$(this).panelManager('showMessage',url+' // '+method+' // '+_params);
+		},
+
+
+
+		/**
+		*	LIST
+		*/
+		
 		//creem una llista en base al que hem rebut via json
 		// per escriure fem servir selector, que és un rand; per a clicks fem servir futureSelector que és la id fixa
 		createListBlock : function(selector, futureSelector, content, nextPanel, operations) {
 			var $this = $(this),
 				slct = $(selector),
-				container = $('<ul class="elements"></ul>')
+				container = $(LIST_UL)
 					.appendTo(selector);
 
 			$.each(content.items, function(i, item) {
@@ -420,14 +488,51 @@ var time = 1000;
 			
 			return container;
 		},
-		
+
+		sortListBlock : function(selector){
+			var slct = $(selector).find(LIST_UL_SELECTOR);
+
+			slct.sortable({
+				axis: 'y',
+				cursor: 'move',
+				opacity: config.dragOpacity,
+				placeholder: "emptyListItem",
+				revert: true
+			});
+			slct.disableSelection();
+		},
+
+		saveSortListBlock : function(selector){
+			var id = [],
+				slct = $(selector);
+
+			slct.find(LIST_UL_SELECTOR).sortable('destroy');
+
+			slct.find(LIST_ITEM_SELECTOR).each(function(i){
+					id.push($(this).data('id'));
+				});
+
+			return {id:id};
+		},
+
+		//tornem tots els elements on eren abans de fer sort
+		cancelListBlock : function(selector){
+			slct.find(LIST_UL_SELECTOR).sortable('cancel')
+				.sortable('destroy');
+		},
+
+
+
+		/**
+		*	GALLERY + IMAGES
+		*/		
 		
 		//creem una galeria en base al que hem rebut via json
 		// per escriure fem servir selector, que és un rand; per a clicks fem servir futureSelector que és la id fixa
 		createGalleryBlock : function(selector, futureSelector, content, nextPanel, operations) {
 			var $this = $(this),
 				slct = $(selector),
-				container = $('<ul class="elements"></ul>')
+				container = $(LIST_UL)
 					.appendTo(selector);
 						
 			$.each(content.items, function(i, item) {
@@ -457,6 +562,151 @@ var time = 1000;
 			
 			return container;
 		},
+		
+		//creem una imatge un cop l'han deixat anar
+		createDroppedImage : function(file){
+			var preview = $(GALLERY_ITEM),
+				image = $('img', preview),
+				reader = new FileReader();
+	
+			reader.onload = function(e){
+	
+				// e.target.result holds the DataURL which
+				// can be used as a source of the image:
+	
+				image.attr('src',e.target.result);
+			};
+	
+			// Reading the file as a DataURL. When finished,
+			// this will trigger the onload function above:
+			reader.readAsDataURL(file);
+	
+			message.hide();
+			preview.appendTo(dropbox);
+	
+			// Associating a preview container
+			// with the file, using jQuery's $.data():
+	
+			$.data(file,preview);
+		},
+
+		//creem una zona on deixar arxius
+		createDroppableArea : function(object){
+			var $this = $(this),
+				dropbox = $(object).addClass('dropbox'),
+				message = $('<span class="message"></span>').appendTo(dropbox),
+				dropboxes = $('.dropbox');
+			
+			dropbox.filedrop({
+				// The name of the $_FILES entry:
+				paramname:'pic',
+		
+				maxfiles: 5,
+		    	maxfilesize: 2, // in mb
+				url: './post_file.php',
+			
+				//drag over browser window	
+			    docOver: function(e) {
+					dropboxes.addClass('fileOnDoc');
+					message.html("Arrossega-ho fins aquí");
+					Cnsl.log(e);
+			    },
+			    docLeave: function() {
+			        dropboxes.removeClass('fileOnDoc');
+			    },
+			    
+			    // drag over #dropzone
+			    dragOver: function() {
+					dropbox.addClass('fileOnDrag');
+					message.html("Arrossega-ho fins aquí");
+			    },
+			    dragLeave: function() {
+			        dropbox.removeClass('fileOnDrag');
+			    },
+			    
+			    drop: function() {
+			        // user drops file
+			        dropbox.removeClass('fileOnDrag');
+			        dropboxes.removeClass('fileOnDoc');
+			        message.html("");
+			    },
+			
+				uploadFinished:function(i,file,response){
+					// response is the JSON object that php returns
+					var block = $.data(file).addClass('done');
+					$('.progress',block).delay(config.delay).slideUp();
+				},
+			
+				error: function(err, file) {
+					switch(err) {
+						case 'BrowserNotSupported':
+							$this.panelManager('showMessage', BAD_BROSWER_UPLOAD);
+							break;
+						case 'TooManyFiles':
+							$this.panelManager('showMessage', MANY_FILES, {'qty': this.maxfiles});
+							break;
+						case 'FileTooLarge':
+							$this.panelManager('showMessage', FILE_TOO_LARGE, {'file': file.name, 'size': this.maxfilesize});
+							break;
+						default:
+							break;
+					}
+				},
+			
+				// Called before each upload is started
+				beforeEach: function(file){
+					if(!file.type.match(/^image\//)){
+						$this.panelManager('showMessage', ONLY_IMG);
+			
+						// Returning false will cause the
+						// file to be rejected
+						return false;
+					}
+				},
+			
+				uploadStarted:function(i, file, len){
+					$this.panelManager('createImageDropped', file, dropbox);
+				},
+		
+				progressUpdated: function(i, file, progress) {
+					$.data(file).find('.progress').width(progress+'%');
+				}
+			});
+		},
+		
+		//creem un holder temporal per a mostrar la imatge en progrés
+		createImageDropped : function (file, dropbox){
+			var preview = $(GALLERY_ITEM),
+				image = $('img', preview),
+				reader = new FileReader();
+				
+			$('.progressHolder', preview).css('display', 'block');
+		
+			reader.onload = function(e){
+	
+				// e.target.result holds the DataURL which
+				// can be used as a source of the image:
+	
+				image.attr('src',e.target.result);
+			};
+	
+			// Reading the file as a DataURL. When finished,
+			// this will trigger the onload function above:
+			reader.readAsDataURL(file);
+	
+			preview.appendTo(dropbox);
+	
+			// Associating a preview container
+			// with the file, using jQuery's $.data():
+	
+			$.data(file,preview);
+		},
+
+
+
+		/**
+		*	FORM
+		*/
 		
 		//creem un formulari en base al que hem rebut via json
 		// per escriure fem servir selector, que és un rand; per a clicks fem servir futureSelector que és la id fixa
@@ -491,7 +741,7 @@ var time = 1000;
 		},
 		
 		//desem les dades del form i passem a text pla
-		uneditFormBlock : function(selector) {
+		saveEditFormBlock : function(selector) {
 			var $this = $(this),
 				slct = $(selector),
 				items = slct.data('items'),
@@ -584,7 +834,12 @@ var time = 1000;
 			
 			this.panelManager('resetScroll');
 		},
+
+		//eliminem els canvis del formulari i recuperem l'antic
+		cancelFormBlock : function(selector) {			
+		},
 		
+		//helper per als selects, construeix tots els 'option'
 		createFormOptions : function(options,template, info){
 			var ops = new Array;
 			
@@ -600,49 +855,30 @@ var time = 1000;
 		  
 		  return ops;
 		},
-		
-		//creem un enllaç per a obrir un panell nou
-		createPanelLink : function(objectSelector, futureSelector, nextPanel){
-			var $this = $(this),
-				slct = $(futureSelector);
-			
-			slct.on('click', objectSelector, function(){
-				Cnsl.log($(this));
-				var li = $(this).parent(),
-					item = li.data('node');
 
-				li.addClass('active')
-					.siblings()
-						.removeClass('active');
-				$this.panelManager('openPanel', item.model, item.id, nextPanel);
+
+
+		/**
+		*	TIPS
+		*/
+
+		//crea un nou bloc de consells
+		createTipBlock : function(selector, content){
+			var $this = $(this),
+				slct = $(selector),
+				container = $(TIP_UL)
+					.appendTo(selector);
+
+			slct.find('h3').prepend(TIP_ICON);
+
+			$.each(content.items, function(i, item) {
+				var info = { item : item },
+					li = $this.panelManager('cloneWithData', TIP_ITEM, info, item);
+
+				li.appendTo(container);
 			});
-		},
-		
-		//creem una imatge un cop l'han deixat anar
-		createDroppedImage : function(file){
-			var preview = $(GALLERY_ITEM),
-				image = $('img', preview),
-				reader = new FileReader();
-	
-			reader.onload = function(e){
-	
-				// e.target.result holds the DataURL which
-				// can be used as a source of the image:
-	
-				image.attr('src',e.target.result);
-			};
-	
-			// Reading the file as a DataURL. When finished,
-			// this will trigger the onload function above:
-			reader.readAsDataURL(file);
-	
-			message.hide();
-			preview.appendTo(dropbox);
-	
-			// Associating a preview container
-			// with the file, using jQuery's $.data():
-	
-			$.data(file,preview);
+			
+			return container;
 		},
 		
 		
@@ -685,8 +921,8 @@ var time = 1000;
 
 					//si el botó és dual omplim 2 acions
 					op.primary = ObjectHandler.cloneObject(operation);
-					if(operation.save){
-						op.secondary = ObjectHandler.cloneObject(operation.save);
+					if(operation.second){
+						op.secondary = ObjectHandler.cloneObject(operation.second);
 						op.secondary.apply = operation.apply;
 					}
 					op.current = 'primary';
@@ -710,26 +946,26 @@ var time = 1000;
 					node = icon.parent().data('node'),
 					operation = node[node.current],
 					id = [],
-					liData;
+					liData,
+					operation_type = operation.type + ((node.current == 'secondary') ? '-'+node.primary.type : '');
 
 				if(node.menu){
 					switch(operation.apply){
 						case 'none':
 							// operacions: edita, nou, filtre...
-							$this.panelManager('processOperation', operation.type, selector);
+							$this.panelManager('processOperation', operation_type, selector);
 							break;
 						case 'multi':
 							// operacions: esborra multi....
 							$('input:checked', slct).each( function(){
 								id.push($(this).val());
 							});
-							$this.panelManager('processOperation', operation.type, selector, id);
+							$this.panelManager('processOperation', operation_type, selector, id);
 							break;
 					}
 				}else{
 					// operacions: esborra simple...
-					liData = icon.closest(LIST_ITEM_SELECTOR).data('node');
-					$this.panelManager('processOperation', operation.type, selector, liData.id);
+					$this.panelManager('processOperation', operation_type, selector, icon.closest(LIST_ITEM_SELECTOR).data('id'));
 				}
 			});
 		},
@@ -740,29 +976,58 @@ var time = 1000;
 				slct = $(selector),
 				currentPanel = selector.split(' ')[0].split('#panel-')[1],
 				currentBlock = selector.split(' ')[2].split('.block-')[1],
-				button = $('.operationsMenu .'+operation_type, slct);	
+				button = $('.operationsMenu .'+operation_type.split('-')[0], slct),
+				node = button.data('node'),
+				apiCall = node[node.current].apiCall,
+				params;
 
 			id = ($.isArray(id)) ? id.join(',') : id;
 			
 			switch(operation_type){
+				case 'delete':
+					params = {id:id};
+					break;
+
+				case 'edit':
+					$this.panelManager('changeButtonAction',button, selector);
+					$this.panelManager('editFormBlock',selector+' '+FORM_SELECTOR);
+					break;
+					
+				case 'save-edit':
+					$this.panelManager('changeButtonAction',button, selector);
+					$this.panelManager('saveEditFormBlock',selector+' '+FORM_SELECTOR);
+					break;
+					
+				case 'cancel-edit':
+					$this.panelManager('changeButtonAction',button, selector);
+					$this.panelManager('cancelEditFormBlock',selector+' '+FORM_SELECTOR);
+					break;
+
 				case 'new':
 					//$this.panelManager('openPanel', item.model, item.id, nextPanel);
 					break;
-					
-				case 'edit':
+
+				case 'sort':
 					$this.panelManager('changeButtonAction',button, selector);
-					$this.panelManager('editFormBlock',selector+" .update");
+					$this.panelManager('sortListBlock',selector);
 					break;
 					
-				case 'save':
+				case 'save-sort':
 					$this.panelManager('changeButtonAction',button, selector);
-					$this.panelManager('uneditFormBlock',selector+" .update");
+					params = $this.panelManager('saveSortListBlock',selector);
+					break;
+					
+				case 'cancel-sort':
+					$this.panelManager('changeButtonAction',button, selector);
+					$this.panelManager('cancelSortListBlock',selector);
 					break;
 					
 				default:
 					alert(operation_type+" panel:"+currentPanel+" block:"+currentBlock+" id:"+id);
 					break;
 			}
+
+			if(apiCall) $this.panelManager('sendResponse',apiCall.url,apiCall.method,params);
 		},
 		
 		//canviem els botons per a la funció alternativa
@@ -780,13 +1045,7 @@ var time = 1000;
 			button.replaceWith(button2);
 
 			//el link es fa a través dels clicks al block filtrats per OPERATION_SELECTOR
-		},
-		
-		
-		/**
-		*	INTERACTION
-		*/
-		
+		},	
 		
 		//controlem els elements seleccionats
 		manageCheckboxes : function(selector){			
@@ -813,123 +1072,13 @@ var time = 1000;
 				$(".elements",slct).removeClass('selectedChildren');
 			}
 		},
-		
-		//creem una zona on deixar arxius
-		createDroppableArea : function(object){
-			var $this = $(this),
-				dropbox = $(object).addClass('dropbox'),
-				message = $('<span class="message"></span>').appendTo(dropbox);
 			
-			dropbox.filedrop({
-				// The name of the $_FILES entry:
-				paramname:'pic',
-		
-				maxfiles: 5,
-		    	maxfilesize: 2, // in mb
-				url: './post_file.php',
-			
-				//drag over browser window	
-			    docOver: function() {
-			        dropbox.addClass('fileOnDoc');
-			        message.html("Arrossega-ho fins aquí");
-			    },
-			    docLeave: function() {
-			        dropbox.removeClass('fileOnDoc');
-			    },
-			    
-			    // drag over #dropzone
-			    dragOver: function() {
-			        dropbox.addClass('fileOnDrag');
-			    },
-			    dragLeave: function() {
-			        dropbox.removeClass('fileOnDrag');
-			    },
-			    
-			    drop: function() {
-			        // user drops file
-			        dropbox.removeClass('fileOnDrag');
-			        dropbox.removeClass('fileOnDoc');
-			        message.html("");
-			    },
-			
-				uploadFinished:function(i,file,response){
-					// response is the JSON object that php returns
-					var block = $.data(file).addClass('done');
-					$('.progress',block).delay(DELAY).slideUp(SPEED);
-				},
-			
-				error: function(err, file) {
-					switch(err) {
-						case 'BrowserNotSupported':
-							$this.panelManager('showMessage', BAD_BROSWER_UPLOAD);
-							break;
-						case 'TooManyFiles':
-							$this.panelManager('showMessage', MANY_FILES, {'qty': this.maxfiles});
-							break;
-						case 'FileTooLarge':
-							$this.panelManager('showMessage', FILE_TOO_LARGE, {'file': file.name, 'size': this.maxfilesize});
-							break;
-						default:
-							break;
-					}
-				},
-			
-				// Called before each upload is started
-				beforeEach: function(file){
-					if(!file.type.match(/^image\//)){
-						$this.panelManager('showMessage', ONLY_IMG);
-			
-						// Returning false will cause the
-						// file to be rejected
-						return false;
-					}
-				},
-			
-				uploadStarted:function(i, file, len){
-					$this.panelManager('createImageDropped', file, dropbox);
-				},
-		
-				progressUpdated: function(i, file, progress) {
-					$.data(file).find('.progress').width(progress+'%');
-				}
-			});
-
-		},
-		
-		createImageDropped : function (file, dropbox){
-			var preview = $(GALLERY_ITEM),
-				image = $('img', preview),
-				reader = new FileReader();
-				
-			$('.progressHolder', preview).css('display', 'block');
-		
-			reader.onload = function(e){
-	
-				// e.target.result holds the DataURL which
-				// can be used as a source of the image:
-	
-				image.attr('src',e.target.result);
-			};
-	
-			// Reading the file as a DataURL. When finished,
-			// this will trigger the onload function above:
-			reader.readAsDataURL(file);
-	
-			preview.appendTo(dropbox);
-	
-			// Associating a preview container
-			// with the file, using jQuery's $.data():
-	
-			$.data(file,preview);
-		},
-	
 		
 		
 		/**
 		*	SCROLLBARS
 		*/
-		
-		
+				
 		//apliquem tots els scrolls de la p�gina
 		initScrolls : function() {
 			var $this = $(this),
@@ -964,21 +1113,21 @@ var time = 1000;
 			
 			var win = $(window),
 				optionsV = {
-					'verticalDragMaxHeight' : SCROLL_MAX_SIZE,
+					'verticalDragMaxHeight' : config.scrollMaxSize,
 					'showArrows' : true,
 					'animateScroll' : true,
-					'animateDuration' : SPEED,
-					'hijackInternalLinks' : true,
+					'animateDuration' : config.speed,
+					'hijackInternalLinks' : false,
 					'hideFocus' : true,
 					//posem -6 per contrarrestar el width del css
 					'verticalGutter' : -6,
 				},
 				optionsH = {
-					'horizontalDragMaxWidth' : SCROLL_MAX_SIZE,
+					'horizontalDragMaxWidth' : config.scrollMaxSize,
 					'showArrows' : true,
 					'animateScroll' : true,
-					'animateDuration' : SPEED,
-					'hijackInternalLinks' : true,
+					'animateDuration' : config.speed,
+					'hijackInternalLinks' : false,
 					'hideFocus' : true,
 					'verticalGutter' : 0,
 				},
@@ -1026,11 +1175,11 @@ var time = 1000;
 			panels.css('height', $(window).height() - bar);
 		},
 		
+
 		
 		/**
 		*	HELPERS
-		*/
-		
+		*/		
 				
 		//constructor d'id
 		getPanelID : function(number, hash) {
@@ -1040,14 +1189,12 @@ var time = 1000;
 				return '#panel-' + number;
 			else
 				return 'panel-' + number;
-		},
-		
+		},		
 		
 		//obtenim la div on colocar les dades
 		getContentPane : function(selector) {
 			return $(selector).jScrollPane().data('jsp').getContentPane();
-		},
-		
+		},		
 		
 		//substituïm els valors especificats a l'array
 		//omplim el 'data' de l'objecte principal amb totes les dades de node
@@ -1058,8 +1205,7 @@ var time = 1000;
 			tmp.data('node', ObjectHandler.cloneObject(node));
 			
 			return tmp;
-		},
-		
+		},		
 		
 		//en cas d'error retornem un missatge
 		showMessage : function(message, params) {

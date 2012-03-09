@@ -71,6 +71,10 @@ a{
   }
 }
 
+div[class$='-block']{
+  position: relative;
+}
+
 .loading{
   @include inline-block;
   background: $menuBkg;
@@ -85,46 +89,6 @@ a{
 .form-block,
 .gallery-block{
   margin: $gutter 0;
-}
-
-.elements{  
-  &>li{
-    position: relative;
-    
-    &:hover{
-      background: $hoverBkg;
-      color: $hoverText;
-      
-      .operations a{
-        visibility: visible;
-      }
-      
-      .selected{
-        background: mix($hoverBkg,$selectedBkg);
-      }
-    }
-    
-    &>a{
-      display: block;
-      line-height: $listItemHeight;
-    }
-  }
-  
-  input[type='checkbox']{
-    position: absolute;
-    visibility: hidden;
-  }
-  
-  .operations{
-    position: absolute;
-  }
-}
-
-.selected,
-li:hover{
-  & input[type='checkbox']{
-    visibility: visible;
-  }
 }
 
 .close{
@@ -207,15 +171,20 @@ a.iconic{
   margin-left: -$gutter;
   padding-left: $gutter;
   
+  ul{
+    margin:{
+      left: -$gutter;
+      right: -$gutter;
+    }
+  }
+  
   .elements{
+    border-top: 1px solid $border;
+        
     &>li{
       border-bottom: 1px solid $border;
-      margin: 0 (-$gutter);
-      
-      &:first-child{
-        border-top: 1px solid $border;
-      }
-      
+      //margin: 0 (-$gutter);
+            
       &>a{
         padding: 0 $gutter;
       }
@@ -226,11 +195,68 @@ a.iconic{
       }
       
       .operations{
-        right: 10px;
+        right: 10px + $gutter;
         top: 0;
       }
     }
   }
+}
+
+
+.elements{  
+  &>li{
+    position: relative;
+    
+    &:hover{
+      background: $hoverBkg;
+      color: $hoverText;
+      
+      .operations a{
+        visibility: visible;
+      }
+      
+      .selected{
+        background: mix($hoverBkg,$selectedBkg);
+      }
+    }
+    
+    &>a{
+      display: block;
+      line-height: $listItemHeight;
+    }
+  }
+  
+  input[type='checkbox']{
+    position: absolute;
+    visibility: hidden;
+  }
+  
+  .operations{
+    position: absolute;
+  }
+}
+
+.selected,
+li:hover{
+  & input[type='checkbox']{
+    visibility: visible;
+  }
+}
+
+.ui-sortable{
+  a{
+    cursor: move;
+  }
+  
+  .operations,
+  input[type='checkbox']{
+    display: none;
+  }
+}
+
+.emptyListItem{
+  background: $dropHole;
+  height: $listItemHeight;
 }
 
 .active{  
@@ -257,10 +283,31 @@ a.iconic{
   color: $selectedText;
 }
 
+/**
+ *   15. TIPS
+ */
+
+.tip-block{
+  ul{      
+    margin: $gutter/2 (-$gutter/2);
+  }
+  
+  li{
+    padding: 0 $gutter/2;
+  }
+  
+  .operationsMenu{
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 0px;
+    top: 0;
+  }
+}
 
 
 /**
- *   15. DETAILS
+ *   15a. DETAILS
  */
 .detail{
   //@extend .panel;
@@ -616,7 +663,8 @@ h2{
 }
 
 h3{
-  font-size: 180%
+  font-size: 180%;
+  line-height: $iconSize;
 }
 
 h4{

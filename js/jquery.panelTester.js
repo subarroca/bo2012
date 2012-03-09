@@ -31,7 +31,8 @@
 			list.push({
 				'name' : mod[i]+'.'+options[i],
 				'model' : options[i],
-				'id' : i
+				'id' : i,
+				'order' : i
 			});
 		}
 					
@@ -42,37 +43,89 @@
 			'title' : 'Titol del panell',
 			'type' : 'list',
 			
-			'contents' : new Array({
+			'contents' : [{
 				'type' : 'list',
 				//tag : 'ul',
 				'title' : numPanel + '. ' +model+' - '+id,
-				'extras' : new Array('sortable'),
 				'active' : activeId,
-				'operations' : new Array({
+				'operations' : [{
 					'name' : 'nou',
 					'type' : 'new',
 					'icon' : 'plus',
 					'apply' : 'none', // none, single, multi
-					'url' : '',
+					'apiCall' : {
+						url : 'bla',
+						method : 'blo',
+					},
+				},{
+					'name' : 'ordena',
+					'type' : 'sort',
+					'icon' : 'move_vertical',
+					'apply' : 'none', // none, single, multi
+					'second' : {
+						'name' : 'desa',
+						'type' : 'save',
+						'icon' : 'upload',
+						'apiCall' : {
+							url : 'bla',
+							method : 'blo',
+						},
+					}
 				},{
 					'name' : 'filtre',
 					'type' : 'search',
 					'icon' : 'magnifying_glass',
 					'apply' : 'none', // none, single, multi
-					'url' : '',
+					'apiCall' : {
+						url : 'bla',
+						method : 'blo',
+					},
 				},{
 					'name' : 'esborra',
 					'type' : 'delete',
 					'icon' : 'trash_stroke',
 					'apply' : 'multi', // none, single, multi
-					'url' : '',
-				}),
+					'apiCall' : {
+						url : 'bla',
+						method : 'blo',
+					},
+				}],
 				'items' : list
+			},{
+				'type' : 'tip',
+				//tag : 'ul',
+				'title' : '',
+				'operations' : [{
+					'name' : 'següent',
+					'type' : 'next',
+					'icon' : 'arrow_right',
+					'apply' : 'none', // none, single, multi
+				},{
+					'name' : 'amaga',
+					'type' : 'hide',
+					'icon' : 'aperture',
+					'apply' : 'none', // none, single, multi
+					'second' : {
+						'name' : 'mostra',
+						'type' : 'show',
+						'icon' : 'eye',
+					}
+				},{
+					'name' : 'anterior',
+					'type' : 'prev',
+					'icon' : 'arrow_left',
+					'apply' : 'none', // none, single, multi
+				}],
+				items : [
+					'tip #1',
+					'tip #2',
+					'tip #3',
+					'tip #4'],
 			},{
 				'type' : 'gallery',
 				'title' : "Galeria",
-				'extras' : new Array('droppable','sortable'),
-				'items' : new Array({
+				'extras' : ['droppable','sortable'],
+				'items' : [{
 					'src' : 'img/examples/img0.jpg',
 					'alt' : 'Test alt',
 					'name' : 'Nom',
@@ -90,13 +143,13 @@
 					'name' : 'Nom',
 					'model' : 'images',
 					'id' : 2
-				}),
+				}],
 			},{
 				'type' : 'html',
 				'title' : "Bloc d'html",
 				'html' : "<p><b>Lorem ipsum dolor sit amet</b>, consectetur adipiscing elit. Phasellus eu sapien nec metus rhoncus condimentum porta ut erat. Vestibulum et pellentesque nulla. Quisque ut eros risus. Suspendisse eu lorem quam. Integer mollis porta hendrerit. Morbi sit amet purus eu mauris elementum vehicula ac sit amet dui. Proin et risus ligula, at cursus risus. Duis sagittis elementum lacinia. Aliquam rutrum mauris nec libero cursus eget blandit dui pellentesque.</p>"+
 				"<p>Integer tempor bibendum sapien sit amet convallis. Duis eu orci urna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras dictum accumsan ligula, eget facilisis orci viverra ornare. Ut est turpis, sollicitudin in bibendum quis, viverra at velit. Suspendisse ullamcorper ornare pharetra. Maecenas quis mi ac felis suscipit bibendum. Integer mollis rutrum felis et fringilla.</p>"
-			}),
+			}],
 		};
 		
 		setTimeout(function() {			
@@ -125,23 +178,26 @@
 			'numPanel' : numPanel,
 			'title' : 'Titol del panell',
 			'type' : 'list',
-			'contents' : new Array({
+			'contents' : [{
 				'type' : 'form',
 				//'extras' : new Array('editable'),
 				'title' : 'Nova entrada',
-				'operations' : new Array({
+				'operations' : [{
 					'name' : 'edita',
 					'type' : 'edit',
 					'icon' : 'pen',
 					'apply' : 'none', // none, single, multi
-					'save' : {
+					'second' : {
 						'name' : 'desa',
 						'type' : 'save',
 						'icon' : 'upload',
-						'url' : '',
+						'apiCall' : {
+							url : 'bla',
+							method : 'blo',
+						},
 					}
-				}),
-				'items' : new Array({
+				}],
+				'items' : [{
 					'name' : 'title',
 					'type' : 'text',
 					'label' : 'T�tol',
@@ -155,8 +211,8 @@
 					'name' : 'companies',
 					'type' : 'check',
 					'label' : 'Accions a',
-					'value' : new Array('0','3'),
-					'options' : new Array({
+					'value' : ['0','3'],
+					'options' : [{
 						'value' : '0',
 						'label' : 'google'
 					},{
@@ -168,13 +224,13 @@
 					},{
 						'value' : '3',
 						'label' : 'kiwity'
-					})
+					}]
 				},{
 					'name' : 'os',
 					'type' : 'radio',
 					'label' : 'Sistema operatiu',
-					'value' : new Array('1'),
-					'options' : new Array({
+					'value' : ['1'],
+					'options' : [{
 						'value' : '0',
 						'label' : 'android'
 					},{
@@ -186,13 +242,13 @@
 					},{
 						'value' : '3',
 						'label' : 'bada'
-					})
+					}]
 				},{
 					'name' : 'model',
 					'type' : 'select',
 					'label' : 'Model',
-					'value' : new Array('2'),
-					'options' : new Array({
+					'value' : ['2'],
+					'options' : [{
 						'value' : '0',
 						'label' : 'decimal'
 					},{
@@ -204,14 +260,14 @@
 					},{
 						'value' : '3',
 						'label' : 'lower'
-					})
+					}]
 				},{
 					'name' : 'model2',
 					'type' : 'select',
 					'label' : 'Model multiple',
 					'multiple' : true,
-					'value' : new Array('2','1'),
-					'options' : new Array({
+					'value' : ['2','1'],
+					'options' : [{
 						'value' : '0',
 						'label' : 'decimal'
 					},{
@@ -223,9 +279,9 @@
 					},{
 						'value' : '3',
 						'label' : 'lower'
-					})
-				})
-			})
+					}]
+				}]
+			}]
 		};
 		
 		setTimeout(function() {			
