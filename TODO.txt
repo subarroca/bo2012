@@ -5,3 +5,7 @@
 - Enviament a API
 - Inclusió del menú
 - Bloc de traducció d'idiomes
+
+- Passar a handlebars
+- Afegir events per a callbacks de json
+- Posar el Panel Manager com a global

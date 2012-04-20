@@ -9,186 +9,196 @@
 var time = 1000;
 
 (function($) {
-	var production = !((document.location.hostname == "localhost") | (document.location.protocol == "file:"));
+	var production = !((document.location.hostname == "localhost") | (document.location.protocol == "file:")),
 	
-	var _numPanels = 0;
-	var parent;
-	var mainContent;
+		_numPanels = 0,
+		parent,
+		mainContent,
 
-	var defaultPanelURL = '';
+		defaultPanelURL = '',
 
-	var config = {
-		speed : 500,
-		slide : 100,
-		delay : 3000,
+		config = {
+			speed : 500,
+			slide : 100,
+			delay : 1000,
 
-		scrollMaxSize : 100,
+			scrollMaxSize : 100,
 
-		dragOpacity: .8,
+			dragOpacity: .8,
 
-		baseURL : ''
-	}
+			baseURL : ''
+		};
 
 	// none: no depen de id, t�pic de men�
 	// single: dep�n d'una sola id, no va al men�
 	// multi: aplica tant a llista com a men�
-	const MENU_APPLY = ['none', 'multi'];
-	const LIST_APPLY = ['single', 'multi'];
+	const MENU_APPLY = ['none', 'multi'],
+		LIST_APPLY = ['single', 'multi'],
 
 	
-	/*
-	*	TEMPLATES HTML
-	*/
-	
-	const PANEL_CONTAINER = '<section id="[id]" class="panel [selector]">'+
-							'<span class="loading">carregant...</span>'+
-						'</section>';
-	
-	const PANEL_HEADER = '<header>'+
-							'<h2>[title]</h2>'+
-							'<a class="close icon x_alt"></a>'+
-						'</header>';
-	
-	const GENERIC_BLOCK = '<[tag] class="block-[num] [type]-block">'+
-							'<h3>[title]</h3>'+
-						'</[tag]>';
-				
-	// OPERACIONS
+		/*
+		*	TEMPLATES HTML
+		*/
+		
+		PANEL_CONTAINER = '<section id="[id]" class="panel [selector]">'+
+								'<span class="loading">carregant...</span>'+
+							'</section>',
+		
+		PANEL_HEADER = '<header>'+
+								'<h2>[title]</h2>'+
+								'<a class="close icon x_alt"></a>'+
+							'</header>',
+		
+		GENERIC_BLOCK = '<[tag] class="block-[num] [type]-block">'+
+								'<h3>[title]</h3>'+
+							'</[tag]>',
+					
+		// OPERACIONS
 
-	const OPERATION_COUNTER ='<li class="counter">'+
-						'<a class="icon x_alt"></a>'+
-						'<span class="counterText"></span>'+
-					'</li>';
-					
-	const OPERATION_ITEM ='<li class="[apply] [type]">'+
-					'<a class="icon [icon]"></a>'+
-				'</li>';
-
-	const OPERATION_SELECTOR = '.icon';
-
-	// FORM
-				
-	const FORM_BLOCK = '<div class="form update"></div>';
-
-	const FORM_SELECTOR = '.update';
-				
-	const FORM_TEXT = '<div class="[type]">'+
-						'<label for=[name]>[label]</label>'+
-						'<input type ="text" id="[name]" name="[name]" placeholder="[label]" value="[value]"/>'+
-					'</div>';
-					
-	const FORM_TEXTAREA = '<div class="[type]">'+
-						'<label for=[name]>[label]</label>'+
-						'<textarea id="[name]" name="[name]" placeholder="[label]">[value]</textarea>'+
-					'</div>';
-					
-	const FORM_GROUP = '<div class="[type]">'+
-						'<label>[label]</label>'+
-						'[options]'+
-					'</div>';
-					
-	const FORM_CHECK = '<div>'+
-						'<input type ="checkbox" id="[name]-[i]" name="[name]" value="[value]"/>'+
-						'<label for="[name]-[i]">[label]</label>'+
-					'</div>';
-					
-	const FORM_RADIO = '<div>'+
-						'<input type ="radio" id="[name]-[i]" name="[name]" value="[value]"/>'+
-						'<label for="[name]-[i]">[label]</label>'+
-					'</div>';
-				
-	const FORM_SELECT_SINGLE = '<div class="[type]">'+
-						'<label for=[name]>[label]</label>'+
-						'<select id="[name]" name="[name]">[options]</select>'+
-					'</div>';
-				
-	const FORM_SELECT_MULTI = '<div class="[type]">'+
-						'<label for=[name]>[label]</label>'+
-						'<select multiple="multiple" id="[name]" name="[name]">[options]</select>'+
-					'</div>';
+		OPERATION_COUNTER ='<li class="counter">'+
+							'<a class="icon x_alt"></a>'+
+							'<span class="counterText"></span>'+
+						'</li>',
 						
-	const FORM_OPTION = '<option value="[value]">[label]</option>';
-	
-	const FORM_PLAIN = '<div>'+
-						'<span>[value]</span>'+
-					'</div>';
-				
-	// GALLERY
+		OPERATION_ITEM ='<li class="[apply] [type]">'+
+						'<a class="icon [icon]"></a>'+
+					'</li>',
 
-	const GALLERY_ITEM = '<li class="id-[id]">'+
-					'<span class="message"></span>'+
-					'<input type="checkbox" name="[model]" value="[id]"/>'+
-					'<a>'+
-						'<figure>'+
-							'<img src="[src]" />'+
-							'<div class="progressHolder">'+
-								'<div class="progress"></div>'+
-							'</div>'+
-							'<figcaption>[name]</figcaption>'+
-						'</figure>'+
-					'</a>'+
-				'</li>';
-						
-	// LIST
+		OPERATION_SELECTOR = '.icon',
 
-	const LIST_UL = '<ul class="elements"></ul>';
-
-	const LIST_ITEM = '<li data-id="[id]">'+
-					'<input type="checkbox" name="[model]" value="[id]"/>'+
-					'<a href="[href]">'+
-						'[name]'+
-					'</a>'+
-				'</li>';
-
-	const LIST_UL_SELECTOR = '.elements';
-	const LIST_ITEM_SELECTOR = LIST_UL_SELECTOR+'>li';
-	const LIST_LINK_SELECTOR = LIST_ITEM_SELECTOR +' a:not('+OPERATION_SELECTOR+')';
-
-	// LANGUAGE
+		// FORM
 					
-	const LANGUAGE_BOX = '<div>'+
-					'</div>';
-	
-	const LANGUAGE_TAB = '<div>'+
-					'</div>';
-	
-	const LANGUAGE_CONTENT = 'div'+
-					'</div>';
-	
-	const LANGUAGE_LINK = '<div>'+
-					'</div>';
+		FORM_BLOCK = '<div class="form update"></div>',
 
-	// MESSAGE
-	
-	const ALERT_CONTAINER = '<div class="message_holder">'+
-					'<div class="message_box">'+
-						'<header>'+
-							'[title]'+
-							'<a class="close icon x_alt"></a>'+
-						'</header>'+
-						'[message]'+
-					'</div>'+
-				'</div>';
+		FORM_SELECTOR = '.update',
+					
+		FORM_TEXT = '<div class="[type]">'+
+							'<label for=[name]>[label]</label>'+
+							'<input type ="text" id="[name]" name="[name]" placeholder="[label]" value="[value]"/>'+
+						'</div>',
+						
+		FORM_TEXTAREA = '<div class="[type]">'+
+							'<label for=[name]>[label]</label>'+
+							'<textarea id="[name]" name="[name]" placeholder="[label]">[value]</textarea>'+
+						'</div>',
+						
+		FORM_GROUP = '<div class="[type]">'+
+							'<label>[label]</label>'+
+							'[options]'+
+						'</div>',
+						
+		FORM_CHECK = '<div>'+
+							'<input type ="checkbox" id="[name]-[i]" name="[name]" value="[value]"/>'+
+							'<label for="[name]-[i]">[label]</label>'+
+						'</div>',
+						
+		FORM_RADIO = '<div>'+
+							'<input type ="radio" id="[name]-[i]" name="[name]" value="[value]"/>'+
+							'<label for="[name]-[i]">[label]</label>'+
+						'</div>',
+					
+		FORM_SELECT_SINGLE = '<div class="[type]">'+
+							'<label for=[name]>[label]</label>'+
+							'<select id="[name]" name="[name]">[options]</select>'+
+						'</div>',
+					
+		FORM_SELECT_MULTI = '<div class="[type]">'+
+							'<label for=[name]>[label]</label>'+
+							'<select multiple="multiple" id="[name]" name="[name]">[options]</select>'+
+						'</div>',
+							
+		FORM_OPTION = '<option value="[value]">[label]</option>';
+		
+		FORM_PLAIN = '<div>'+
+							'<span>[value]</span>'+
+						'</div>',
+					
+		// GALLERY
 
-	// TIP
+		GALLERY_ITEM = '<li class="id-[id]">'+
+						'<span class="message"></span>'+
+						'<input type="checkbox" name="[model]" value="[id]"/>'+
+						'<a>'+
+							'<figure>'+
+								'<img src="[src]" />'+
+								'<div class="progressHolder">'+
+									'<div class="progress"></div>'+
+								'</div>'+
+								'<figcaption>[name]</figcaption>'+
+							'</figure>'+
+						'</a>'+
+					'</li>',
+							
+		// LIST
 
-	const TIP_UL = '<ul class="tips"></ul>';
-	const TIP_ITEM = '<li>[item]</div>';
-	const TIP_ICON = '<span class="icon question_mark"></span>';
+		LIST_UL = '<ul class="elements"></ul>',
 
-				
-	// errors
-	const BAD_PATH = 'Ruta errònia';
-	const ONLY_IMG = 'Només pots pujar imatges';
-	const FILE_TOO_LARGE = '[file] massa gran. La mida màxima és [size]MB';
-	const MANY_FILES = "El màxim d'arxius permès és [qty]";
-	const BAD_BROSWER_UPLOAD = "El teu navegador no admet la pujada d'arxius mitjançant arrossegament";
+		LIST_ITEM = '<li data-id="[id]">'+
+						'<input type="checkbox" name="[model]" value="[id]"/>'+
+						'<a href="[href]">'+
+							'[name]'+
+						'</a>'+
+					'</li>',
+
+		LIST_UL_SELECTOR = '.elements',
+		LIST_ITEM_SELECTOR = LIST_UL_SELECTOR+'>li',
+		LIST_LINK_SELECTOR = LIST_ITEM_SELECTOR +' a:not('+OPERATION_SELECTOR+')',
+
+		// LANGUAGE
+						
+		LANGUAGE_BOX = '<div>'+
+						'</div>',
+		
+		LANGUAGE_TAB = '<div>'+
+						'</div>',
+		
+		LANGUAGE_CONTENT = 'div'+
+						'</div>',
+		
+		LANGUAGE_LINK = '<div>'+
+						'</div>',
+
+		// MESSAGE
+		
+		ALERT_CONTAINER = '<div class="message_holder">'+
+						'<div class="message_box">'+
+							'<header>'+
+								'[title]'+
+								'<a class="close icon x_alt"></a>'+
+							'</header>'+
+							'[message]'+
+						'</div>'+
+					'</div>',
+
+		// TIP
+
+		TIP_UL = '<ul class="tips"></ul>',
+		TIP_ITEM = '<li>[item]</div>',
+		TIP_ICON = '<span class="icon question_mark"></span>',
+
+					
+		// errors
+		BAD_PATH = 'Ruta errònia',
+		ONLY_IMG = 'Només pots pujar imatges',
+		FILE_TOO_LARGE = '[file] massa gran. La mida màxima és [size]MB',
+		MANY_FILES = "El màxim d'arxius permès és [qty]",
+		BAD_BROSWER_UPLOAD = "El teu navegador no admet la pujada d'arxius mitjançant arrossegament";
 	
 	var methods = {
 		//creem un panell per defecte
 		init : function(_config) {
 			$.extend(config, _config);
 			$.fx.speeds._default = config.speed;
+
+			$.fn.unfold = function(speed, distance){
+				distance = (distance) ? distance : config.slide;
+
+				return $(this).css({'opacity': 0,
+							'left': -distance})
+						.animate({
+							opacity : '1',
+							left : 0}, speed);
+			};
 
 			parent = $(this.selector);
 			
@@ -236,7 +246,7 @@ var time = 1000;
 							$this.panelManager('openPanel', hashElements[i * 2], hashElements[i * 2 + 1], i, hashElements[i * 2 + 3]);
 							i++;
 						}
-					});
+					},config.delay);
 			} else {
 				this.panelManager('showMessage', BAD_PATH);
 			}
@@ -301,12 +311,8 @@ var time = 1000;
 				section = $($(this).panelManager('cloneWithData', PANEL_CONTAINER, info))
 					.appendTo(mainContent);
 			
-			section.css({'opacity': 0,
-					'left': -config.slide,
-					'z-index': 100 - numPanel})
-				.animate({
-					opacity : '1',
-					left : 0});
+			section.css({'z-index': 100 - numPanel})
+				.unfold();
 
 			this.panelManager('resetScroll');
 
@@ -322,7 +328,8 @@ var time = 1000;
 		//interpretem la info que ens arriba des del server
 		parseJson : function(json, action) {
 			var $this = $(this),
-				panel = $this.panelManager('getContentPane', json.selector);
+				panel = $this.panelManager('getContentPane', json.selector),
+				content = '';
 
 			panel.empty()
 				.addClass(json.type)
@@ -331,15 +338,15 @@ var time = 1000;
 			//preparem el header del panell
 			var info = {
 					title : json.title,
-				},
-				header = $(StringHandler.multiReplace(PANEL_HEADER, info))
-					.appendTo(panel);
-
-			$('.close', header).on('click',function(){
-				$this.panelManager('closePanel', json.numPanel);
-			});
+				};
+			content += StringHandler.multiReplace(PANEL_HEADER, info);
+			$(content).appendTo(panel);			
 	
 			$this.panelManager('createBlocks', panel, json);
+
+			$('.close', content).on('click',function(){
+				$this.panelManager('closePanel', json.numPanel);
+			});
 
 			//apliquem scroll, el fem aparéixer amb fade in i ens petem la class random per evitar conflictes en el futur
 			panel.fadeIn();

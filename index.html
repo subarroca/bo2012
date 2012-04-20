@@ -1,10 +1,18 @@
-<!doctype html> <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js ie6 oldie" lang="en">
+<![endif]-->
+<!--[if IE 7]>
+<html class="no-js ie7 oldie" lang="en">
+<![endif]-->
+<!--[if IE 8]>
+<html class="no-js ie8 oldie" lang="en">
+<![endif]-->
+<!--[if gt IE 8]>
+<!-->
 <html class="no-js" lang="en">
-  <!--<![endif]-->
-  <head>
+<!--<![endif]-->
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title></title>
@@ -14,51 +22,308 @@
     <link rel="stylesheet" href="css/iconic_stroke.css">
     <link rel="stylesheet" href="css/backoffice.css">
     <script src="js/libs/modernizr-2.0.6.min.js"></script>
-  </head>
-  <body>
-    <header id="menu">
-      <h1 id="title">Logo</h1>
-      <ul>
-        <li>
-          Profile
-        </li>
-        <li>
-          Messages
-        </li>
-        <li>
-          Sign out
-        </li>
-      </ul>
-      <nav>
-        <ul>
-          <li>
-            <a href="#">nav ul li a</a>
-          </li>
-          <li>
-            <a href="#">nav ul li a</a>
-          </li>
-          <li>
-            <a href="#">nav ul li a</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
-    <div id="scrolling">
+</head>
+<body>
+  <div id="panelSystem"></div>
+
+  <script type="text/x-handlebars-template" id="panel-container">
+    <section id="panel-{{numPanel}}" class="panel {{selector}} {{type}}" data-id="{{numPanel}}">
+      <header>
+        <h2>{{title}}</h2>
+        <button class="close icon x_alt">x</button>
+      </header>
+    </section>
+  </script>
+
+
+
+  <script type="text/x-handlebars-template" id="generic-block">
+    <div>Si us plau, defineix una estructura per a blocs tipus {{type}}<div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="form-block">
+    <div class="form update"></div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="form-text">
+    <div class="{{type}}">
+        <label for={{name}}>{{label}}</label>
+        <input type ="text" id="{{name}}" name="{{name}}" placeholder="{{label}}" value="{{value}}"/>
     </div>
-    <script src="js/libs/jquery-1.7.1.js"></script>
-    <script src="js/libs/jquery-ui-1.8.18.custom.min.js"></script>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>-->
-    <script src="js/jquery.panelManager.js"></script>
-    <script src="js/jquery.panelTester.js"></script>
-    <script src="js/libs/jquery.jscrollpane.js"></script>
-    <script src="js/libs/jquery.mousewheel.min.js"></script>
-    <script src="js/libs/jquery.filedrop.js"></script>
-    <!--<script src="js/script.js"></script>-->
-  	<script>
-  		$(document).ready(function(){
-  			$('#scrolling').panelManager();
-  		});
-  	</script>
-  </body>
+  </script>
+
+  <script type="text/x-handlebars-template" id="form-textarea">
+    <div class="{{type}}">
+        <label for={{name}}>{{label}}</label>
+        <textarea id="{{name}}" name="{{name}}" placeholder="{{label}}">{{value}}</textarea>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="form-group">
+    <div class="{{type}}">
+        <label>{{label}}</label>
+        {{options}}
+    </div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="form-check">
+    <div>
+        <input type ="checkbox" id="{{name}}-{{i}}" name="{{name}}" value="{{value}}"/>
+        <label for="{{name}}-{{i}}">{{label}}</label>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="form-radio">
+    <div>
+        <input type ="radio" id="{{name}}-{{i}}" name="{{name}}" value="{{value}}"/>
+        <label for="{{name}}-{{i}}">{{label}}</label>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="form-select-single">
+    <div class="{{type}}">
+        <label for={{name}}>{{label}}</label>
+        <select id="{{name}}" name="{{name}}">{{options}}</select>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="form-select-multi">
+    <div class="{{type}}">
+        <label for={{name}}>{{label}}</label>
+        <select multiple="multiple" id="{{name}}" name="{{name}}">{{options}}</select>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="form-option">
+    <option value="{{value}}">{{label}}</option>
+  </script>
+
+  <script type="text/x-handlebars-template" id="form-plain">
+    <div>
+        <span>{{value}}</span>
+    </div>
+  </script>
+
+
+
+
+
+
+  <script type="text/x-handlebars-template" id="gallery-block">
+    <section class="galleryBlock block-{{numBlock}}">
+      <h3>{{title}}</h3>
+      {{#$ operations}} {{> operationMenu}} {{/$}}
+      <ul class="elements">
+        {{#each items}}
+          <li data-id = "{{id}}">
+            <span class="message">{{message}}</span>
+            <input type="checkbox" name="{{model}}" value="{{id}}"/>
+            <a href="#">
+              <figure>
+                <img src="{{src}}" />
+                <div class="progressHolder">
+                  <div class="progress"></div>
+                </div>
+                <figcaption>{{name}}</figcaption>
+              </figure>
+            </a>
+            {{#$ ../operations}} {{> operationItem}} {{/$}}
+          </li>
+        {{/each}}
+      </ul>
+    </section>
+  </script>
+
+
+
+  <script type="text/x-handlebars-template" id="html-block">
+    <section class="htmlBlock">
+      <h3>{{title}}</h3>
+      {{{html}}}
+    </section>
+  </script>
+
+
+
+  <script type="text/x-handlebars-template" id="menu-block">
+    <section class="listBlock block-{{numBlock}}">
+      <h3>{{title}}</h3>
+      <ul class="elements">
+        {{#each items}}
+          <li data-id = "{{id}}">
+            <a href="{{apiCall.url}}">{{name}}</a>
+          </li>
+        {{/each}}
+      </ul>
+    </section>
+  </script>
+
+
+
+  <script type="text/x-handlebars-template" id="list-block">
+    <section class="listBlock block-{{numBlock}}">
+      <h3>{{title}}</h3>
+      {{#$ operations}} {{> operationMenu}} {{/$}}
+      <ul class="elements">
+        {{#each items}}
+          <li data-id = "{{id}}">
+            <input type="checkbox" name="{{model}}" value="{{id}}"/>
+            <a href="{{apiCall.url}}">{{name}}</a>
+            {{#$ ../operations}} {{> operationItem}} {{/$}}
+          </li>
+        {{/each}}
+      </ul>
+    </section>
+  </script>
+
+
+
+  <script type="text/x-handlebars-template" id="operation-menu">
+    <div class='operationMenu'>
+      <li class="counter">
+        <button class="icon x_alt"></a>
+        <span class="counterText"></span>
+      </li>
+      {{#each multi}}
+        {{#$ this.[0]}} {{> operationLink}} {{/$}}
+      {{/each}}
+      {{#each none}}
+        {{#$ this.[0]}} {{> operationLink}} {{/$}}
+      {{/each}}
+    </div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="operation-item">
+    <div class="operationItem">
+      {{#each single}}
+        {{#$ this.[0]}} {{> operationLink}} {{/$}}
+      {{/each}}
+      {{#each multi}}
+        {{#$ this.[0]}} {{> operationLink}} {{/$}}
+      {{/each}}
+    </div>
+  </script>
+
+  
+  <script type="text/x-handlebars-template" id="operation-link">
+    <button class="icon {{icon}}" data-id="{{id}}"></button>
+  </script>
+
+  
+  <script type="text/x-handlebars-template" id="tooltip">
+    <div class="tooltip">{{name}}</div>
+  </script>
+
+
+
+
+
+
+  <script type="text/x-handlebars-template" id="language-block">
+    <div></div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="language-tab">
+    <div></div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="language-item">
+    <div></div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="language-link">
+    <div></div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="alert-container">
+    <div class="message_holder">
+      <div class="message_box">
+        <header>
+          '{{title}}
+          <a class="close icon x_alt"></a>
+        </header>
+        '{{message}}
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars-template" id="tip-block">
+    <section class="tipBlock">
+      <h3><span class="icon question_mark"></span>{{title}}</h3>
+      {{#$ operations}} {{> operationMenu}} {{/$}}
+      <ul>
+        {{#each items}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    </section>
+  </script>
+
+
+  <script src="js/libs/jquery-1.7.2.js"></script>
+  <script src="js/libs/jquery-ui-1.8.18.custom.min.js"></script>
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+  -->
+  <script src="js/libs/jquery.jscrollpane.js"></script>
+  <script src="js/libs/jquery.mousewheel.min.js"></script>
+  <script src="js/libs/jquery.filedrop.js"></script>
+  <!-- <script src="http://cloud.github.com/downloads/wycats/handlebars.js/handlebars-1.0.0.beta.6.js"></script>
+  -->
+  <script src="js/libs/handlebars-1.0.0.beta.6.js"></script>
+
+  <script src="js/panelManager.jquery.js"></script>
+
+  <script>
+  $('#panelSystem').panelManager({
+    baseURL : 'http://kiwity-lab.com/test/boAPItest/apiCalls/',
+    menu : 'panelMenu.php',
+    selectors : {
+      panel : '.panel',
+      menu : '.menu',
+      // block : '',
+      operations : 'button',
+      // form : '',
+      items : 'ul.elements>li',   //tractem l'a a dins
+      item_link : 'a'
+    },
+    templates : {
+      // formBlock : $('#form-block').html(),
+      // formSelector : $('#form-selector').html(),
+      // formText : $('#form-text').html(),
+      // formTextarea : $('#form-textarea').html(),
+      // formGroup : $('#form-group').html(),
+      // formCheck : $('#form-check').html(),
+      // formRadio : $('#form-radio').html(),
+      // formSelectSingle : $('#form-select-single').html(),
+      // formSelectMulti : $('#form-select-multi').html(),
+      // formOption : $('#form-option').html(),
+      // formPlain : $('#form-plain').html(),
+      // galleryBlock : $('#gallery-block').html(),
+      // languageBlock : $('#language-block').html(),
+      // languageTab : $('#language-tab').html(),
+      // languageItem : $('#language-item').html(),
+      // languageLink : $('#language-link').html(),
+      // alertContainer : $('#alert-container').html(),
+      // operationCounter : $('#operation-counter').html(),
+
+      genericBlock : $('#generic-block').html(),
+      panelContainer : $('#panel-container').html(),
+
+      tooltip : $('#tooltip').html(),
+
+      galleryBlock : $('#gallery-block').html(),
+      htmlBlock : $('#html-block').html(),
+      listBlock : $('#list-block').html(),
+      menuBlock : $('#menu-block').html(),
+      tipBlock : $('#tip-block').html()
+    },
+    partials : {
+      operationMenu : $('#operation-menu').html(),
+      operationItem : $('#operation-item').html(),
+      operationLink : $('#operation-link').html(),
+    }
+  });
+  </script>
+</body>
 </html>

@@ -24,31 +24,6 @@ a{
   text-decoration: none;
 }
 
-.tooltip{
-  @include single-box-shadow($shadowColor, 0, 0, $shadowBlur);
-
-  background: $menuBkg;
-  color: $menuText;
-  padding: 3px 5px;
-  position: relative;
-  z-index: 200;
-
-  &:after{
-    @include rotate(45deg);
-    @include single-box-shadow($shadowColor, 0, 0, $shadowBlur);
-
-    background: inherit;
-    bottom: -5px;
-    content: '';
-    display: block;
-    height: 10px;
-    left: 50%;
-    margin-left: -4px;
-    position: absolute;
-    width: 10px;
-  }
-}
-
 
 /**
  *   11. SCROLLING
@@ -85,7 +60,7 @@ a{
     display: block;
     margin: -20px (-$gutter) 0;
     padding: $gutter;
-    width: 100%; 
+    width: $listWidth;
     z-index: 2;
   }
   
@@ -109,11 +84,10 @@ div[class$='-block']{
 }
 
 
-.listBlock,
-.htmlBlock,
-.formBlock,
-.galleryBlock,
-.tipBlock{
+.list-block,
+.html-block,
+.form-block,
+.gallery-block{
   margin: $gutter 0;
 }
 
@@ -126,7 +100,7 @@ div[class$='-block']{
   top: $gutter;
 }
 
-.icon{
+a.iconic{
   &:hover{
     color: $highlight;
   }
@@ -172,21 +146,16 @@ div[class$='-block']{
 /**
  *   13. MENU
  */
-.menu{
+#menu{
   @extend .panel;
   
   background: $menuBkg;
   color: $menuText;
   height: 100%;
-  left: 0;
   padding: $gutter;
   position: fixed;
   width: $menuWidth;
   z-index: 200;
-
-  .close{
-    display: none;
-  }
 }
 
 
@@ -198,7 +167,7 @@ div[class$='-block']{
   //@extend .panel;
 }
 
-.listBlock{
+.list-block{
   margin-left: -$gutter;
   padding-left: $gutter;
   
@@ -242,7 +211,7 @@ div[class$='-block']{
       background: $hoverBkg;
       color: $hoverText;
       
-      .operations button{
+      .operations a{
         visibility: visible;
       }
       
@@ -318,7 +287,7 @@ li:hover{
  *   15. TIPS
  */
 
-.tipBlock{
+.tip-block{
   ul{      
     margin: $gutter/2 (-$gutter/2);
   }
@@ -356,7 +325,7 @@ li:hover{
   
 }
 
-.galleryBlock{
+.gallery-block{
   ul{      
     margin: $gutter/2 (-$gutter/2);
   }
@@ -468,18 +437,20 @@ li:hover{
  *   17. OPERATIONS
  */
 
-.operationMenu,
-.operationItem{  
-  button{
+.operationsMenu,
+.operations{  
+  li{    
     @include inline-block;
-
-    background: transparent;
-    border: 0;
+    
+    padding: $padding;
+    visibility: hidden;
+  }
+  
+  a{
     color: $htmlText;    
     cursor: pointer;
-    font-size: 18px;
+    display: block;
     line-height: $listItemHeight/2 !important;
-    padding: $padding;
     
     &:hover{
       color: $highlight;
@@ -549,7 +520,7 @@ li:hover{
  *   18. FORM
  */
 
-.formBlock{
+.form-block{
   div{
     line-height: $listItemHeight;
   }
